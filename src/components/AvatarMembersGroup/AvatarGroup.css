@@ -1,0 +1,5 @@
+.avatar-group > .MuiAvatarGroup-avatar {
+  height: 32px;
+  width: 32px;
+  font-size: 1rem;
+}
