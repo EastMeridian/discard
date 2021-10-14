@@ -60,7 +60,7 @@ const ChatScreen = ({ channel }: Props) => {
   return (
     <MainLayout>
       <ScrollView>
-        {loading && <MessageSkeletons key={channelID} />}
+        {loading && <MessageSkeletons channelID={channelID} />}
         {!loading && (
           <>
             <InitialMessage members={channel?.members || []} />

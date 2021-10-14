@@ -27,8 +27,11 @@ const getRandomWidth = () => getRandomRange(2, 6);
 
 const RandomTextLine = () => (
   <TextLineLayout>
-    {Array.from(Array(getRandomTextNumber()).keys()).map(() => (
-      <TextSkeleton width={getRandomWidth() + "rem"} />
+    {Array.from(Array(getRandomTextNumber()).keys()).map((key) => (
+      <TextSkeleton
+        width={getRandomWidth() + "rem"}
+        key={"randomtextline" + key}
+      />
     ))}
   </TextLineLayout>
 );
@@ -78,7 +81,7 @@ const MessageSkeletonC = () => (
 );
 
 interface MessageSkeletonsProps {
-  key: string;
+  channelID: string;
 }
 
 const MessageSkeletons = memo(
@@ -90,7 +93,7 @@ const MessageSkeletons = memo(
       <MessageSkeletonA />
     </>
   ),
-  (prevProps, nextProps) => prevProps.key === nextProps.key
+  (prevProps, nextProps) => prevProps.channelID === nextProps.channelID
 );
 
 export default MessageSkeletons;
