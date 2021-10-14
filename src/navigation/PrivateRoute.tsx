@@ -2,8 +2,7 @@ import { Redirect, Route, RouteProps } from "react-router";
 
 import { getAuth } from "firebase/auth";
 import { useAuthState } from "react-firebase-hooks/auth";
-
-const auth = getAuth();
+import { auth } from "services/firestore";
 
 interface Props extends RouteProps {}
 

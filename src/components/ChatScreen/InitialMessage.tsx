@@ -1,7 +1,8 @@
-import { getAuth } from "@firebase/auth";
 import { Typography } from "@mui/material";
 import AvatarMembersGroup from "components/AvatarMembersGroup";
 import { User } from "models/user";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "services/firestore";
 import styled from "styled-components";
 import { classifyMembers } from "utils/members";
 
@@ -15,10 +16,9 @@ const Container = styled.div`
   flex-direction: column;
 `;
 
-const auth = getAuth();
-
 const InitialMessage = ({ members }: Props) => {
-  const { others } = classifyMembers(members, auth.currentUser);
+  const [user] = useAuthState(auth);
+  const { others } = classifyMembers(members, user);
   return (
     <Container>
       <div style={{ display: "flex" }}>

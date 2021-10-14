@@ -9,7 +9,7 @@ import {
   DocumentData,
   FirestoreError,
 } from "firebase/firestore";
-import { Auth } from "firebase/auth";
+import { User } from "firebase/auth";
 
 import { useCollectionSubscription } from "./useCollectionSubscription";
 import { useState } from "react";
@@ -24,14 +24,14 @@ type ChatValue = {
 };
 
 interface ChatOptions {
-  auth: Auth;
+  currentUser: User;
   db: Firestore;
   channelID: Channel["id"];
   onMessageSent?: () => void;
 }
 
 export const useChat = ({
-  auth,
+  currentUser,
   db,
   channelID,
   onMessageSent,
@@ -50,9 +50,9 @@ export const useChat = ({
   );
 
   const sendMessage = async (text: string) => {
-    if (auth.currentUser) {
+    if (currentUser) {
       try {
-        const { uid, photoURL, displayName } = auth.currentUser;
+        const { uid, photoURL, displayName } = currentUser;
         await createMessage({ uid, text, photoURL, channelID, displayName });
         onMessageSent?.();
       } catch (e: any) {

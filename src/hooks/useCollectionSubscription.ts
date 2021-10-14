@@ -25,14 +25,14 @@ export const useCollectionSubscription = <T = DocumentData, Q = any>(
   );
 
   useEffect(() => {
-    /* dispatch({ type: "reset" }); */
+    dispatch({ type: "reset" });
     const unsubscribe = onSnapshot(query, (snapshot) => {
       dispatch({
         type: "value",
         value: snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })),
       });
       snapshot.docChanges().forEach(({ type, doc }) => {
-        /* console.log("New type", type, doc.data()); */
+        console.log("New type", type, doc.data());
         if (type === "added") {
           /* console.log("New object: ", doc.data()); */
         }

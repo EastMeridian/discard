@@ -1,7 +1,18 @@
 import { User as AuthUser } from "@firebase/auth";
-import { doc, getDoc, setDoc } from "@firebase/firestore";
+import {
+  collection,
+  doc,
+  endAt,
+  getDoc,
+  limit,
+  query,
+  setDoc,
+  startAt,
+  orderBy,
+  getDocs,
+} from "@firebase/firestore";
 import { User } from "models/user";
-import { db } from "services/firestore";
+import { auth, db } from "services/firestore";
 
 export const createUser = async ({
   uid,
@@ -9,8 +20,8 @@ export const createUser = async ({
   photoURL,
   email,
 }: User) => {
-  const usersRef = doc(db, "users", uid);
-  await setDoc(usersRef, {
+  const userRef = doc(db, "users", uid);
+  await setDoc(userRef, {
     uid,
     displayName,
     photoURL,
@@ -19,8 +30,8 @@ export const createUser = async ({
 };
 
 export const userExists = async (uid: User["uid"]) => {
-  const usersRef = doc(db, "users", uid);
-  const docSnap = await getDoc(usersRef);
+  const userRef = doc(db, "users", uid);
+  const docSnap = await getDoc(userRef);
   return docSnap.exists();
 };
 
@@ -30,3 +41,25 @@ export const getUser = ({ uid, displayName, photoURL, email }: AuthUser) => ({
   photoURL,
   email,
 });
+
+export const searchUser = async (text: string) => {
+  const usersRef = collection(db, "users");
+
+  const q = query(
+    usersRef,
+    orderBy("displayName"),
+    startAt(text),
+    endAt(text + "\uf8ff"),
+    limit(10)
+  );
+
+  const querySnapshot = await getDocs(q);
+
+  return querySnapshot.docs
+    .map((doc) => {
+      const id = doc.id;
+      const user = doc.data() as User;
+      return { id, ...user };
+    })
+    .filter(({ uid }) => uid !== auth.currentUser?.uid);
+};

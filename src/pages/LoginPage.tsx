@@ -1,20 +1,27 @@
 import { Button, Typography } from "@mui/material";
 import {
-  getAuth,
   GoogleAuthProvider,
   signInWithPopup,
   FacebookAuthProvider,
+  UserCredential,
 } from "firebase/auth";
 import { useHistory, useLocation } from "react-router-dom";
 import { createUser, userExists } from "services/api/users";
-
-const auth = getAuth();
+import { auth } from "services/firestore";
 
 interface LocationState {
   from: {
     pathname: string;
   };
 }
+
+const onSignInSucceed = async ({ user }: UserCredential) => {
+  const { uid, displayName, photoURL, email } = user;
+  const exist = await userExists(uid);
+  if (!exist) {
+    await createUser({ uid, displayName, photoURL, email });
+  }
+};
 
 const SignIn = () => {
   const history = useHistory();
@@ -26,13 +33,7 @@ const SignIn = () => {
     const provider = new GoogleAuthProvider();
 
     signInWithPopup(auth, provider)
-      .then(async ({ user }) => {
-        const { uid, displayName, photoURL, email } = user;
-        const exist = await userExists(uid);
-        if (!exist) {
-          await createUser({ uid, displayName, photoURL, email });
-        }
-      })
+      .then(onSignInSucceed)
       .then(() => {
         history.push(from);
       });
@@ -42,14 +43,7 @@ const SignIn = () => {
     const provider = new FacebookAuthProvider();
 
     signInWithPopup(auth, provider)
-      .then(async ({ user }) => {
-        const { uid, displayName, photoURL, email } = user;
-        console.log("facebook user", { uid, displayName, photoURL, email });
-        const exist = await userExists(uid);
-        if (!exist) {
-          await createUser({ uid, displayName, photoURL, email });
-        }
-      })
+      .then(onSignInSucceed)
       .then(() => {
         history.push(from);
       });

@@ -1,10 +1,11 @@
-import { getAuth } from "@firebase/auth";
 import Badge from "@mui/material/Badge";
 import Avatar from "@mui/material/Avatar";
 import ListItemButton from "@mui/material/ListItemButton";
 import CloseIcon from "@mui/icons-material/Close";
 import { User } from "models/user";
 import React, { useState } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "services/firestore";
 
 interface Props {
   members: User[];
@@ -13,15 +14,14 @@ interface Props {
   onDelete?: () => void;
 }
 
-const auth = getAuth();
-
 const ListItemGroup = ({ members, selected, onClick, onDelete }: Props) => {
+  const [user] = useAuthState(auth);
   const [hovered, setHovered] = useState(false);
   const firstMember = members[0];
   const others =
-    firstMember.uid === auth.currentUser?.uid
+    firstMember.uid === user?.uid
       ? members
-      : members.filter(({ uid }) => uid !== auth.currentUser?.uid);
+      : members.filter(({ uid }) => uid !== user?.uid);
 
   return (
     <ListItemButton

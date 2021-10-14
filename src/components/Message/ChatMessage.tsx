@@ -1,12 +1,10 @@
 import { Avatar, Typography } from "@mui/material";
-import { getAuth } from "firebase/auth";
 import { Message } from "models/message";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "services/firestore";
 import styled from "styled-components";
 
-const auth = getAuth();
-
-interface Props {
+export interface MessageProps {
   message: Message;
   style?: React.CSSProperties;
 }
@@ -20,24 +18,22 @@ const Container = styled.div`
   padding: 0.5rem 1rem;
 `;
 
-const ContentContainer = styled.div`
+export const MessageContentContainer = styled.div`
   display: flex;
   flex-direction: column;
   margin: 0 1rem;
 `;
 
-const ChatMessage = ({ message, style }: Props) => {
-  const [user] = useAuthState(auth);
-  const { text, uid, photoURL, displayName } = message;
-  const messageClass = uid === user.uid ? "sent" : "received";
+const ChatMessage = ({ message, style }: MessageProps) => {
+  const { text, photoURL, displayName } = message;
 
   return (
     <Container style={style}>
       <Avatar src={photoURL || undefined} alt="user" />
-      <ContentContainer>
+      <MessageContentContainer>
         <Typography>{displayName}</Typography>
         <div>{text}</div>
-      </ContentContainer>
+      </MessageContentContainer>
     </Container>
   );
 };

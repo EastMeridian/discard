@@ -2,8 +2,8 @@ import { useChat } from "hooks/useChat";
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { getAuth } from "firebase/auth";
-import { db } from "services/firestore";
-import ChatMessage from "../ChatMessage";
+import { auth, db } from "services/firestore";
+import ChatMessage from "../Message/ChatMessage";
 import ScrollView from "../ScrollView";
 import Paper from "@mui/material/Paper";
 import ChatHeader from "./ChatHeader";
@@ -11,8 +11,8 @@ import { useParams } from "react-router";
 import { Channel } from "models/channel";
 import InitialMessage from "./InitialMessage";
 import { Message } from "models/message";
-
-const auth = getAuth();
+import { MessageSkeletons } from "components/Message";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 interface Props {
   channel?: Channel;
@@ -28,12 +28,12 @@ const MainLayout = styled.main`
 `;
 
 const ChatScreen = ({ channel }: Props) => {
+  const [user] = useAuthState(auth);
   const cursorRef = useRef<HTMLDivElement>(null);
   const { channelID } = useParams<{ channelID: string }>();
-
   const [formValue, setFormValue] = useState("");
   const [{ messages, loading }, sendMessage] = useChat({
-    auth,
+    currentUser: user,
     db,
     channelID,
   });
@@ -56,19 +56,24 @@ const ChatScreen = ({ channel }: Props) => {
     }
   };
 
+  console.log("ChatScreen", loading);
   return (
     <MainLayout>
-      <ChatHeader members={channel?.members || []} />
       <ScrollView>
-        <InitialMessage members={channel?.members || []} />
-        {messages &&
-          messages.map((msg: Message) => (
-            <ChatMessage
-              key={msg.id}
-              message={msg}
-              style={{ marginTop: "0.5rem" }}
-            />
-          ))}
+        {loading && <MessageSkeletons key={channelID} />}
+        {!loading && (
+          <>
+            <InitialMessage members={channel?.members || []} />
+            {messages &&
+              messages.map((msg: Message) => (
+                <ChatMessage
+                  key={msg.id}
+                  message={msg}
+                  style={{ marginTop: "0.5rem" }}
+                />
+              ))}
+          </>
+        )}
         <div ref={cursorRef} className="" />
       </ScrollView>
       <form

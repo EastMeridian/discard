@@ -3,32 +3,32 @@ import { Channel } from "models/channel";
 import { Redirect, Route, Switch, useRouteMatch } from "react-router";
 
 interface Props {
-  channel?: Channel;
+  selected?: Channel;
   channels?: Channel[];
 }
 
-const ChatSwitch = ({ channel, channels }: Props) => {
-  const { path } = useRouteMatch();
-
+const ChatSwitch = ({ selected, channels }: Props) => {
+  const { path, ...rest } = useRouteMatch();
+  console.log(path, rest, selected);
   return (
     <Switch>
-      {channel && (
+      {selected && (
         <Route
           exact
           path={path}
           render={() => {
-            return <Redirect to={`${path}/${channel.id}`} />;
+            return <Redirect to={`${path}/${selected.id}`} />;
           }}
         />
       )}
-      {/*  <Route path={`${path}/:channelID`}>
-        <ChatScreen channel={channel} />
-      </Route> */}
-      {channels?.map((c) => (
-        <Route path={`${path}/:channelID`}>
-          <ChatScreen channel={channel} key={c.id} />
+      <Route path={`${path}/:channelID`}>
+        <ChatScreen channel={selected} />
+      </Route>
+      {/* {channels?.map((channel) => (
+        <Route path={`${path}/:${channel.id}`} key={channel.id}>
+          <ChatScreen channel={channel} />
         </Route>
-      ))}
+      ))} */}
     </Switch>
   );
 };

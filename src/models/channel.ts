@@ -8,5 +8,5 @@ export interface Channel {
   createdBy: User["uid"];
   members: User[]; // temp: should be User["uid"][] with a user context
   membersUID: User["uid"][];
-  lastMessage?: Message & { readBy: User["uid"][] };
+  lastMessage?: Message["id"];
 }

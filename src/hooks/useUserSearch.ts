@@ -1,40 +1,17 @@
-import { getAuth } from "@firebase/auth";
 import { useEffect, useState, useRef } from "react";
 import debounce from "lodash/debounce";
 import {
   collection,
   query,
   orderBy,
-  startAt,
-  endAt,
   getDocs,
   limit,
 } from "@firebase/firestore";
-import { db } from "services/firestore";
+import { auth, db } from "services/firestore";
 import { User } from "models/user";
+import { searchUser } from "services/api/users";
 
 const usersRef = collection(db, "users");
-
-const auth = getAuth();
-
-const searchUser = async (text: string) => {
-  const q = query(
-    usersRef,
-    orderBy("displayName"),
-    startAt(text),
-    endAt(text + "\uf8ff"),
-    limit(10)
-  );
-
-  const querySnapshot = await getDocs(q);
-  return querySnapshot.docs
-    .map((doc) => {
-      const id = doc.id;
-      const user = doc.data() as User;
-      return { id, ...user };
-    })
-    .filter(({ uid }) => uid !== auth.currentUser?.uid);
-};
 
 const debouncedSearchUser = debounce(
   async (text, callback) => {
