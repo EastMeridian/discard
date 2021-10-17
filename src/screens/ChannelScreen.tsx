@@ -8,12 +8,6 @@ import { useChannels } from "hooks/useChannels";
 import { auth, db } from "services/firestore";
 import ListItemGroup from "components/ListItemChannel";
 import { User } from "models/user";
-import {
-  useHistory,
-  useLocation,
-  useParams,
-  useRouteMatch,
-} from "react-router";
 import Header from "components/Header";
 import { debounce } from "lodash";
 import { deleteChannel } from "services/api/channels";
@@ -21,11 +15,12 @@ import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import { Skeleton } from "@mui/material";
-import ChatSwitch from "navigation/ChatSwitch";
 import { Channel } from "models/channel";
 import ChatHeader from "screens/ChatScreen/components/ChatHeader";
 import ResponsiveDrawer from "components/ResponsiveDrawer";
 import ResponsivePopover from "components/ResponsivePopover";
+import ChatScreen from "./ChatScreen";
+import { useSelectedChannel } from "hooks/useSelectedChannel";
 
 const debounceDeleteChannel = debounce(
   (id) => {
@@ -42,32 +37,17 @@ function SignOut() {
 }
 
 const ChannelScreen = () => {
-  const [selectedChannel, setSelectedChannel] = useState<Channel | undefined>();
   const [{ channels, loading, error }, createChannel] = useChannels({
     auth,
     db,
   });
+  const [selectedChannel, setSelectedChannel] = useSelectedChannel(channels);
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-  const { url, ...rest } = useRouteMatch();
-  const history = useHistory();
-  const location = useLocation();
-  const { channelID } = useParams<{ channelID: string }>();
-
-  const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
-
-  useEffect(() => {
-    if (!selectedChannel && channels && channels.length > 0) {
-      console.log({ channelID, url, location });
-      const defaultChannel = channelID
-        ? channels.find(({ id }) => id === channelID)
-        : channels[0];
-      setSelectedChannel(defaultChannel);
-    }
-  }, [selectedChannel, channels]);
 
   const handleOpenPopover = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -90,8 +70,6 @@ const ChannelScreen = () => {
   const handleSelectChannel = (channel: Channel) => {
     setSelectedChannel(channel);
     handleDrawerToggle();
-    history.push(`${url}/${channel.id}`);
-    console.log("handleSelectChannel");
   };
 
   const popoverOpen = Boolean(anchorEl);
@@ -186,7 +164,7 @@ const ChannelScreen = () => {
           members={selectedChannel?.members}
           onToggleDrawer={handleDrawerToggle}
         />
-        <ChatSwitch selected={selectedChannel} channels={channels} />
+        {selectedChannel && <ChatScreen channel={selectedChannel} />}
       </div>
       <ResponsivePopover
         id={popoverOpen ? "channel-popover" : undefined}

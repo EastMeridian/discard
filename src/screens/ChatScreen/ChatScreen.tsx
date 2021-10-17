@@ -15,7 +15,7 @@ import { MessageSkeletons } from "components/Message";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 interface Props {
-  channel?: Channel;
+  channel: Channel;
 }
 
 const MainLayout = styled.main`
@@ -30,12 +30,11 @@ const MainLayout = styled.main`
 const ChatScreen = ({ channel }: Props) => {
   const [user] = useAuthState(auth);
   const cursorRef = useRef<HTMLDivElement>(null);
-  const { channelID } = useParams<{ channelID: string }>();
   const [formValue, setFormValue] = useState("");
   const [{ messages, loading }, sendMessage] = useChat({
     currentUser: user,
     db,
-    channelID,
+    channelID: channel.id,
   });
 
   useEffect(() => {
@@ -63,7 +62,7 @@ const ChatScreen = ({ channel }: Props) => {
         {!isLoadingScreen && (
           <InitialMessage members={channel?.members || []} />
         )}
-        {isLoadingScreen && <MessageSkeletons channelID={channelID} />}
+        {isLoadingScreen && <MessageSkeletons channelID={channel.id} />}
         {messages?.map((msg: Message) => (
           <ChatMessage
             key={msg.id}

@@ -1,7 +1,7 @@
 import PrivateRoute from "navigation/PrivateRoute";
-import ChannelScreen from "screens/ChannelScreen";
 import LoginPage from "screens/LoginPage";
 import { Switch, Route, Redirect } from "react-router-dom";
+import ChannelScreen from "screens/ChannelScreen";
 
 const RootSwitch = () => (
   <Switch>
@@ -15,7 +15,7 @@ const RootSwitch = () => (
         return <Redirect to="/channels" />;
       }}
     />
-    <PrivateRoute path="/channels">
+    <PrivateRoute path="/channels/:channelID?">
       <ChannelScreen />
     </PrivateRoute>
   </Switch>
