@@ -1,6 +1,6 @@
 import PrivateRoute from "navigation/PrivateRoute";
-import ChatPage from "pages/ChatPage";
-import LoginPage from "pages/LoginPage";
+import ChannelScreen from "screens/ChannelScreen";
+import LoginPage from "screens/LoginPage";
 import { Switch, Route, Redirect } from "react-router-dom";
 
 const RootSwitch = () => (
@@ -16,7 +16,7 @@ const RootSwitch = () => (
       }}
     />
     <PrivateRoute path="/channels">
-      <ChatPage />
+      <ChannelScreen />
     </PrivateRoute>
   </Switch>
 );

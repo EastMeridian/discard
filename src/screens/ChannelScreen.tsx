@@ -2,14 +2,18 @@ import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 
 import AddIcon from "@mui/icons-material/Add";
-import GroupCreationScreen from "components/ChannelCreationScreen";
+import ChannelCreationScreen from "components/ChannelCreationScreen";
 import React, { useEffect, useState } from "react";
 import { useChannels } from "hooks/useChannels";
 import { auth, db } from "services/firestore";
 import ListItemGroup from "components/ListItemChannel";
-import Popover from "@mui/material/Popover";
 import { User } from "models/user";
-import { useHistory, useRouteMatch } from "react-router";
+import {
+  useHistory,
+  useLocation,
+  useParams,
+  useRouteMatch,
+} from "react-router";
 import Header from "components/Header";
 import { debounce } from "lodash";
 import { deleteChannel } from "services/api/channels";
@@ -19,8 +23,9 @@ import Button from "@mui/material/Button";
 import { Skeleton } from "@mui/material";
 import ChatSwitch from "navigation/ChatSwitch";
 import { Channel } from "models/channel";
-import ChatHeader from "components/ChatScreen/ChatHeader";
+import ChatHeader from "screens/ChatScreen/components/ChatHeader";
 import ResponsiveDrawer from "components/ResponsiveDrawer";
+import ResponsivePopover from "components/ResponsivePopover";
 
 const debounceDeleteChannel = debounce(
   (id) => {
@@ -36,12 +41,18 @@ function SignOut() {
   );
 }
 
-const ChatPage = () => {
+const ChannelScreen = () => {
   const [selectedChannel, setSelectedChannel] = useState<Channel | undefined>();
-  const [{ channels, loading, error }, createGroup] = useChannels({ auth, db });
+  const [{ channels, loading, error }, createChannel] = useChannels({
+    auth,
+    db,
+  });
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-  const { url } = useRouteMatch();
+  const { url, ...rest } = useRouteMatch();
   const history = useHistory();
+  const location = useLocation();
+  const { channelID } = useParams<{ channelID: string }>();
+
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
   const handleDrawerToggle = () => {
@@ -50,21 +61,25 @@ const ChatPage = () => {
 
   useEffect(() => {
     if (!selectedChannel && channels && channels.length > 0) {
-      setSelectedChannel(channels[0]);
+      console.log({ channelID, url, location });
+      const defaultChannel = channelID
+        ? channels.find(({ id }) => id === channelID)
+        : channels[0];
+      setSelectedChannel(defaultChannel);
     }
   }, [selectedChannel, channels]);
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleOpenPopover = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = () => {
+  const handleClosePopover = () => {
     setAnchorEl(null);
   };
 
-  const handleCreateGroup = (members: User[]) => {
-    handleClose();
-    createGroup(members);
+  const handleCreateChannel = (members: User[]) => {
+    handleClosePopover();
+    createChannel(members);
   };
 
   const handleDeleteChannel = (id: string) => {
@@ -74,6 +89,7 @@ const ChatPage = () => {
 
   const handleSelectChannel = (channel: Channel) => {
     setSelectedChannel(channel);
+    handleDrawerToggle();
     history.push(`${url}/${channel.id}`);
     console.log("handleSelectChannel");
   };
@@ -109,7 +125,7 @@ const ChatPage = () => {
             </Typography>
 
             <Tooltip title="Create a channel" arrow>
-              <IconButton aria-label="add" onClick={handleClick}>
+              <IconButton aria-label="add" onClick={handleOpenPopover}>
                 <AddIcon />
               </IconButton>
             </Tooltip>
@@ -172,23 +188,24 @@ const ChatPage = () => {
         />
         <ChatSwitch selected={selectedChannel} channels={channels} />
       </div>
-      <Popover
+      <ResponsivePopover
         id={popoverOpen ? "channel-popover" : undefined}
         open={popoverOpen}
         anchorEl={anchorEl}
-        onClose={handleClose}
+        onClose={handleClosePopover}
+        onOpen={handleOpenPopover}
         anchorOrigin={{
           vertical: "bottom",
           horizontal: "center",
         }}
       >
-        <GroupCreationScreen
-          onCreateChannel={handleCreateGroup}
-          style={{ width: "30rem" }}
+        <ChannelCreationScreen
+          onCreateChannel={handleCreateChannel}
+          style={{ width: "30rem", maxWidth: "100%" }}
         />
-      </Popover>
+      </ResponsivePopover>
     </div>
   );
 };
 
-export default ChatPage;
+export default ChannelScreen;

@@ -13,7 +13,7 @@ interface Props {
 
 const ChatHeader = ({ members = [], onToggleDrawer }: Props) => {
   const [user] = useAuthState(auth);
-  const { firstMember, others } = classifyMembers(members, user);
+  const { others } = classifyMembers(members, user);
 
   return (
     <Header>

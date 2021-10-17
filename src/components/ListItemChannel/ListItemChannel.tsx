@@ -6,6 +6,7 @@ import { User } from "models/user";
 import React, { useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "services/firestore";
+import { classifyMembers } from "utils/members";
 
 interface Props {
   members: User[];
@@ -17,11 +18,8 @@ interface Props {
 const ListItemGroup = ({ members, selected, onClick, onDelete }: Props) => {
   const [user] = useAuthState(auth);
   const [hovered, setHovered] = useState(false);
-  const firstMember = members[0];
-  const others =
-    firstMember.uid === user?.uid
-      ? members
-      : members.filter(({ uid }) => uid !== user?.uid);
+
+  const { firstMember, others } = classifyMembers(members, user);
 
   return (
     <ListItemButton
@@ -47,7 +45,7 @@ const ListItemGroup = ({ members, selected, onClick, onDelete }: Props) => {
       >
         {members.length < 3 && (
           <Avatar
-            src={firstMember.photoURL || undefined}
+            src={firstMember?.photoURL || undefined}
             sx={{ width: "2rem", height: "2rem" }}
           />
         )}
@@ -59,7 +57,7 @@ const ListItemGroup = ({ members, selected, onClick, onDelete }: Props) => {
             color="primary"
           >
             <Avatar
-              src={firstMember.photoURL || undefined}
+              src={firstMember?.photoURL || undefined}
               sx={{ width: 30, height: 30 }}
             />
           </Badge>

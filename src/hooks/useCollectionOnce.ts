@@ -39,7 +39,6 @@ export const useCollectionOnce = <T = DocumentData, Q = any>(
     })();
   }, [query, loading]);
 
-  console.log("useCollection");
   /* return useMemo(() => [loading, value, error], [loading, value, error]); */
   return [loading, value, error];
 };

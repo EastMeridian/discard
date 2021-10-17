@@ -1,4 +1,4 @@
-import ChatScreen from "components/ChatScreen";
+import ChatScreen from "screens/ChatScreen";
 import { Channel } from "models/channel";
 import { Redirect, Route, Switch, useRouteMatch } from "react-router";
 

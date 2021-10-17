@@ -1,6 +1,5 @@
 import { Redirect, Route, RouteProps } from "react-router";
 
-import { getAuth } from "firebase/auth";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "services/firestore";
 

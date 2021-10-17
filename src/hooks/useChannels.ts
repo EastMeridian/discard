@@ -13,7 +13,7 @@ import { useCollectionSubscription } from "./useCollectionSubscription";
 import { useState } from "react";
 import { User } from "models/user";
 
-type GroupAction = (members?: User[]) => void;
+type GroupAction = (members?: User[]) => Promise<string | undefined>;
 
 type GroupValue = {
   channels: Channel[] | undefined;
@@ -40,13 +40,14 @@ export const useChannels = ({
   const [loading, channels, error] =
     useCollectionSubscription<Channel[]>(groupsQuery);
 
-  const createGroup = async (members?: User[]) => {
+  const createChannel = async (members?: User[]) => {
     if (auth.currentUser) {
       try {
-        await api.createGroup({
+        const channel = await api.createChannel({
           createdBy: getUser(auth.currentUser),
           members,
         });
+        return channel;
       } catch (e: any) {
         setCreationError(e.message);
       }
@@ -54,6 +55,5 @@ export const useChannels = ({
   };
 
   const data = { channels, loading, error: creationError || error };
-  data.error && console.log("ERROR", data.error);
-  return [data, createGroup];
+  return [data, createChannel];
 };

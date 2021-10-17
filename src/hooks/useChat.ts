@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Channel } from "models/channel";
 import { createMessage } from "../services/api/messages";
 import {
@@ -8,12 +9,13 @@ import {
   Firestore,
   DocumentData,
   FirestoreError,
+  onSnapshot,
 } from "firebase/firestore";
 import { User } from "firebase/auth";
 
-import { useCollectionSubscription } from "./useCollectionSubscription";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Message } from "models/message";
+import { useMessageStore } from "utils/MessagesContext";
 
 type ChatAction = (text: string) => void;
 
@@ -36,7 +38,9 @@ export const useChat = ({
   channelID,
   onMessageSent,
 }: ChatOptions): [ChatValue, ChatAction] => {
-  const [addError, setAddError] = useState(null);
+  const { messages, loading, addMessages, setLoading } =
+    useMessageStore(channelID);
+  const [error, setError] = useState<FirestoreError>();
   const messagesRef = collection(db, "channels", channelID, "messages");
   const messageQuery = query(
     messagesRef,
@@ -44,10 +48,19 @@ export const useChat = ({
     limitToLast(25)
   );
 
-  const [loading, messages, error] = useCollectionSubscription<Message[]>(
-    messageQuery,
-    [channelID]
-  );
+  useEffect(() => {
+    setLoading();
+    const unsubscribe = onSnapshot(messageQuery, (snapshot) => {
+      const messages = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as Message[];
+      addMessages(messages);
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, []);
 
   const sendMessage = async (text: string) => {
     if (currentUser) {
@@ -56,11 +69,12 @@ export const useChat = ({
         await createMessage({ uid, text, photoURL, channelID, displayName });
         onMessageSent?.();
       } catch (e: any) {
-        setAddError(e.message);
+        setError(e.message);
       }
     }
   };
 
-  const data = { messages, loading, error: addError || error };
+  const data = { messages, loading, error };
+
   return [data, sendMessage];
 };

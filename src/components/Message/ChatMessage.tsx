@@ -1,7 +1,5 @@
 import { Avatar, Typography } from "@mui/material";
 import { Message } from "models/message";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "services/firestore";
 import styled from "styled-components";
 
 export interface MessageProps {
