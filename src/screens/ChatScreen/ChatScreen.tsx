@@ -1,13 +1,10 @@
 import { useChat } from "hooks/useChat";
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { getAuth } from "firebase/auth";
 import { auth, db } from "services/firestore";
 import ChatMessage from "../../components/Message/ChatMessage";
 import ScrollView from "../../components/ScrollView";
 import Paper from "@mui/material/Paper";
-import ChatHeader from "./components/ChatHeader";
-import { useParams } from "react-router";
 import { Channel } from "models/channel";
 import InitialMessage from "./components/InitialMessage";
 import { Message } from "models/message";
@@ -26,6 +23,14 @@ const MainLayout = styled.main`
   background-color: white;
   padding: 0;
 `;
+
+/* var it = NextMessageGenerator();
+console.log(it);
+console.log(it.next(10)); 
+console.log(it.next(10));
+console.log(it.next()); 
+console.log(it.next());
+console.log(it.next()); */
 
 const ChatScreen = ({ channel }: Props) => {
   const [user] = useAuthState(auth);
@@ -53,7 +58,7 @@ const ChatScreen = ({ channel }: Props) => {
     }
   };
 
-  console.log("isLoadingScreen", loading, messages);
+  /* console.log("isLoadingScreen", loading, messages); */
   const isLoadingScreen = loading && !(messages?.length > 1);
 
   return (

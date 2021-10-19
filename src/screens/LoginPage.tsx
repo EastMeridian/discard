@@ -17,10 +17,8 @@ interface LocationState {
 
 const onSignInSucceed = async ({ user }: UserCredential) => {
   const { uid, displayName, photoURL, email } = user;
-  const exist = await userExists(uid);
-  if (!exist) {
-    await createUser({ uid, displayName, photoURL, email });
-  }
+
+  await createUser({ uid, displayName, photoURL, email });
 };
 
 const SignIn = () => {

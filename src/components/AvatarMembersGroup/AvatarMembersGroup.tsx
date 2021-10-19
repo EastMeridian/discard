@@ -16,6 +16,7 @@ const AvatarMembersGroup = ({ members, style, max = 3 }: Props) => (
         src={member.photoURL || undefined}
         key={member.uid}
         style={style}
+        alt={member.displayName || "user"}
       />
     ))}
   </AvatarGroup>

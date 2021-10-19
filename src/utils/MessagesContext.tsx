@@ -54,7 +54,7 @@ const messagesReducer = () => (state: ReducerState, action: ReducerAction) => {
 export const useMessageStore = (channelID: string) => {
   const { value, dispatch } = useContext(MessagesContext);
   const { channels, loading } = value;
-  console.log("useMessageStore", channelID, channels);
+  /* console.log("useMessageStore", channelID, channels); */
   const addMessages = (messages: Message[]) => {
     dispatch({ type: "ADD_MESSAGE", value: { channelID, messages } });
   };
@@ -62,7 +62,12 @@ export const useMessageStore = (channelID: string) => {
   const setLoading = (loading = true) => {
     dispatch({ type: "SET_LOADING", value: loading });
   };
-  return { messages: channels[channelID], loading, addMessages, setLoading };
+  return {
+    messages: channels[channelID] || [],
+    loading,
+    addMessages,
+    setLoading,
+  };
 };
 
 interface MessageContextProviderProps {

@@ -21,12 +21,17 @@ export const createUser = async ({
   email,
 }: User) => {
   const userRef = doc(db, "users", uid);
-  await setDoc(userRef, {
-    uid,
-    displayName,
-    photoURL,
-    email,
-  });
+
+  const exist = await userExists(uid);
+
+  if (!exist) {
+    await setDoc(userRef, {
+      uid,
+      displayName,
+      photoURL,
+      email,
+    });
+  }
 };
 
 export const userExists = async (uid: User["uid"]) => {

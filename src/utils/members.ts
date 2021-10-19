@@ -1,14 +1,20 @@
 import { User } from "models/user";
 
-export const classifyMembers = (
-  members: User[],
-  currentUser: User | undefined
-) => {
-  if (members.length === 0) return { others: [] };
+export const classifyMembers = (members: User[], currentUser: User) => {
+  if (members.length === 0) return { members: [], others: [] };
   const others = members.filter(({ uid }) => uid !== currentUser?.uid);
-  const firstMember = others[0];
-  return {
-    firstMember,
-    others,
-  };
+  return { members: [...others, currentUser], others };
+};
+
+export const sortMemberByName = (a: User, b: User) => {
+  if (a.displayName && b.displayName) {
+    if (a.displayName < b.displayName) {
+      return -1;
+    }
+    if (a.displayName > b.displayName) {
+      return 1;
+    }
+  }
+
+  return 0;
 };

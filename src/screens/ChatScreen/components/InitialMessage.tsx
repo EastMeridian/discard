@@ -18,21 +18,22 @@ const Container = styled.div`
 
 const InitialMessage = ({ members }: Props) => {
   const [user] = useAuthState(auth);
-  const { others } = classifyMembers(members, user);
+  const classified = classifyMembers(members, user);
+
   return (
     <Container>
       <div style={{ display: "flex" }}>
         <AvatarMembersGroup
-          members={members}
+          members={classified.members}
           style={{ width: 64, height: 64 }}
         />
       </div>
       <Typography variant="h5" sx={{ marginTop: "1rem" }}>
-        {others.map(({ displayName }) => displayName).join(", ")}
+        {classified.others.map(({ displayName }) => displayName).join(", ")}
       </Typography>
       <div>
         Ceci est le tout début de votre historique des messages directs avec{" "}
-        {others.map(({ displayName }) => displayName).join(", ")}
+        {classified.others.map(({ displayName }) => displayName).join(", ")}
       </div>
     </Container>
   );

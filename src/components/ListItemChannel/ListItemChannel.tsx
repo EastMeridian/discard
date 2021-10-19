@@ -19,7 +19,7 @@ const ListItemGroup = ({ members, selected, onClick, onDelete }: Props) => {
   const [user] = useAuthState(auth);
   const [hovered, setHovered] = useState(false);
 
-  const { firstMember, others } = classifyMembers(members, user);
+  const classified = classifyMembers(members, user);
 
   return (
     <ListItemButton
@@ -45,7 +45,7 @@ const ListItemGroup = ({ members, selected, onClick, onDelete }: Props) => {
       >
         {members.length < 3 && (
           <Avatar
-            src={firstMember?.photoURL || undefined}
+            src={classified.members[0]?.photoURL || undefined}
             sx={{ width: "2rem", height: "2rem" }}
           />
         )}
@@ -53,11 +53,11 @@ const ListItemGroup = ({ members, selected, onClick, onDelete }: Props) => {
           <Badge
             overlap="circular"
             anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-            badgeContent={others.length}
+            badgeContent={classified.others.length}
             color="primary"
           >
             <Avatar
-              src={firstMember?.photoURL || undefined}
+              src={classified.members[0]?.photoURL || undefined}
               sx={{ width: 30, height: 30 }}
             />
           </Badge>
@@ -71,7 +71,7 @@ const ListItemGroup = ({ members, selected, onClick, onDelete }: Props) => {
             marginLeft: "0.5rem",
           }}
         >
-          {others.map(({ displayName }) => displayName).join(", ")}
+          {classified.others.map(({ displayName }) => displayName).join(", ")}
         </div>
         {hovered && (
           <div

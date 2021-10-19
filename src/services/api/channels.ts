@@ -12,6 +12,7 @@ import {
 } from "@firebase/firestore";
 import { db } from "services/firestore";
 import { User } from "models/user";
+import { sortMemberByName } from "utils/members";
 
 const channelsRef = collection(db, "channels");
 
@@ -25,31 +26,27 @@ export const createChannel = async ({
   members?: User[];
   createdBy: User;
 }) => {
-  const finalMembers = [...members, createdBy];
+  const finalMembers = [...members, createdBy].sort(sortMemberByName);
   const memberUIDs = finalMembers.map(({ uid }) => uid);
 
-  const exist = await channelExists(memberUIDs);
+  const exist = await findChannelByMembers(memberUIDs);
 
-  if (!exist) {
-    const channel = await addDoc(channelsRef, {
-      createdBy: createdBy.uid,
-      members: finalMembers,
-      memberUIDs,
-      createdAt: serverTimestamp(),
-    });
-    return channel.id;
+  if (!exist.empty) {
+    return exist.docs[0].id;
   }
+
+  await addDoc(channelsRef, {
+    createdBy: createdBy.uid,
+    members: finalMembers,
+    memberUIDs,
+    createdAt: serverTimestamp(),
+  });
 };
 
-export const channelExists = async (memberUIDs: string[]) => {
-  const channelRef = query(
-    channelsRef,
-    where("memberUIDs", "array-contains", memberUIDs)
-  );
+export const findChannelByMembers = async (memberUIDs: string[]) => {
+  const channelRef = query(channelsRef, where("memberUIDs", "==", memberUIDs));
   const docSnap = await getDocs(channelRef);
-  console.log({ memberUIDs });
-  console.log("channelExists", docSnap.empty, docSnap, docSnap.docs);
-  return !docSnap.empty;
+  return docSnap;
 };
 
 export const deleteChannel = async (id: Channel["id"]) => {

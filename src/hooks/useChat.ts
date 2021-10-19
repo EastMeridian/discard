@@ -13,7 +13,7 @@ import {
 } from "firebase/firestore";
 import { User } from "firebase/auth";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Message } from "models/message";
 import { useMessageStore } from "utils/MessagesContext";
 
@@ -38,10 +38,14 @@ export const useChat = ({
   channelID,
   onMessageSent,
 }: ChatOptions): [ChatValue, ChatAction] => {
+  const lastMessageRef = useRef<Message>();
   const { messages, loading, addMessages, setLoading } =
     useMessageStore(channelID);
+
   const [error, setError] = useState<FirestoreError>();
+
   const messagesRef = collection(db, "channels", channelID, "messages");
+
   const messageQuery = query(
     messagesRef,
     orderBy("createdAt"),
@@ -49,8 +53,16 @@ export const useChat = ({
   );
 
   useEffect(() => {
+    /* console.log("[subscribe]"); */
     setLoading();
     const unsubscribe = onSnapshot(messageQuery, (snapshot) => {
+      /* console.log("snapshot received", snapshot.docs); */
+      snapshot.docChanges().forEach((change) => {
+        const source = change.doc.metadata.hasPendingWrites
+          ? "Local"
+          : "Server";
+        /* console.log("[type change]", source, change.type, change.doc.data()); */
+      });
       const messages = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
@@ -58,9 +70,10 @@ export const useChat = ({
       addMessages(messages);
     });
     return () => {
+      /* console.log("[unsubscribe]"); */
       unsubscribe();
     };
-  }, []);
+  }, [channelID, lastMessageRef?.current?.id]);
 
   const sendMessage = async (text: string) => {
     if (currentUser) {

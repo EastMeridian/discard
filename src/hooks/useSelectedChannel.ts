@@ -4,17 +4,20 @@ import { useHistory, useParams } from "react-router";
 
 export const useSelectedChannel = (
   channels?: Channel[]
-): [Channel | undefined, (channel: Channel) => void] => {
+): [Channel | undefined, (channel?: Channel) => void] => {
   const history = useHistory();
   const { channelID } = useParams<{ channelID: string }>();
   const [selectedChannel, setSelectedChannel] = useState<Channel | undefined>();
 
   const handleSelectChannel = useCallback(
-    (channel: Channel) => {
-      setSelectedChannel(channel);
-      history.push(`/channels/${channel.id}`);
+    (channel?: Channel) => {
+      const nextChannel = channel ?? channels?.[0];
+      if (nextChannel) {
+        setSelectedChannel(nextChannel);
+        history.push(`/channels/${nextChannel.id}`);
+      }
     },
-    [history]
+    [history, channels]
   );
 
   useEffect(() => {

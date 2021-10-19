@@ -27,7 +27,7 @@ const ChatMessage = ({ message, style }: MessageProps) => {
 
   return (
     <Container style={style}>
-      <Avatar src={photoURL || undefined} alt="user" />
+      <Avatar src={photoURL || undefined} alt={displayName || "user"} />
       <MessageContentContainer>
         <Typography>{displayName}</Typography>
         <div>{text}</div>

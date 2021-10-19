@@ -3,7 +3,7 @@ import Tooltip from "@mui/material/Tooltip";
 
 import AddIcon from "@mui/icons-material/Add";
 import ChannelCreationScreen from "components/ChannelCreationScreen";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useChannels } from "hooks/useChannels";
 import { auth, db } from "services/firestore";
 import ListItemGroup from "components/ListItemChannel";
@@ -21,14 +21,7 @@ import ResponsiveDrawer from "components/ResponsiveDrawer";
 import ResponsivePopover from "components/ResponsivePopover";
 import ChatScreen from "./ChatScreen";
 import { useSelectedChannel } from "hooks/useSelectedChannel";
-
-const debounceDeleteChannel = debounce(
-  (id) => {
-    deleteChannel(id);
-  },
-  1000,
-  { leading: true }
-);
+import { useHiddenChannel } from "hooks/useHiddenChannel";
 
 function SignOut() {
   return (
@@ -37,10 +30,8 @@ function SignOut() {
 }
 
 const ChannelScreen = () => {
-  const [{ channels, loading, error }, createChannel] = useChannels({
-    auth,
-    db,
-  });
+  const { hiddenChannels, hideChannel, unhideChannel } = useHiddenChannel();
+  const [{ channels, loading, error }, createChannel] = useChannels(auth, db);
   const [selectedChannel, setSelectedChannel] = useSelectedChannel(channels);
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -57,14 +48,22 @@ const ChannelScreen = () => {
     setAnchorEl(null);
   };
 
-  const handleCreateChannel = (members: User[]) => {
+  const handleCreateChannel = async (members: User[]) => {
     handleClosePopover();
-    createChannel(members);
+    const foundID = await createChannel(members);
+    if (foundID) {
+      const foundChannel = channels.find(({ id }) => id === foundID);
+      if (foundChannel) {
+        handleSelectChannel(foundChannel);
+      }
+      unhideChannel(foundID);
+    }
   };
 
-  const handleDeleteChannel = (id: string) => {
-    console.log("handleDeleteChannel");
-    debounceDeleteChannel(id);
+  const handleHideChannel = (id: string) => {
+    console.log("handleHideChannel");
+    hideChannel(id);
+    setSelectedChannel();
   };
 
   const handleSelectChannel = (channel: Channel) => {
@@ -74,6 +73,9 @@ const ChannelScreen = () => {
 
   const popoverOpen = Boolean(anchorEl);
 
+  const filteredChannels = channels.filter(
+    ({ id }) => hiddenChannels[id] !== true
+  );
   return (
     <div style={{ display: "flex", width: "100%", height: "100%" }}>
       <ResponsiveDrawer
@@ -117,7 +119,7 @@ const ChannelScreen = () => {
               </div>
             )}
             {!loading &&
-              channels?.map((channel) => {
+              filteredChannels?.map((channel) => {
                 const { id, members } = channel;
                 return (
                   <ListItemGroup
@@ -125,7 +127,7 @@ const ChannelScreen = () => {
                     key={id}
                     selected={selectedChannel?.id === id}
                     onClick={() => handleSelectChannel(channel)}
-                    onDelete={() => handleDeleteChannel(id)}
+                    onDelete={() => handleHideChannel(id)}
                   />
                 );
               })}
