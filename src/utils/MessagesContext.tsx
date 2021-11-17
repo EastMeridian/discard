@@ -1,27 +1,42 @@
 import { Message } from "models/message";
 import React, { createContext, Dispatch, useContext, useReducer } from "react";
 
-export const messagesInitialeState = {
-  channels: {},
-  loading: true,
-};
+const START_DATE = new Date(0);
 
-type ReducerState = {
-  loading: boolean;
-  channels: Partial<Record<string, Message[]>>;
-};
+export const messagesInitialeState = {};
 
-type AddMessageAction = {
-  type: "ADD_MESSAGE";
+type ReducerState = Partial<
+  Record<
+    string,
+    { loading?: boolean; lastMessageTime?: Date; messages: Message[] }
+  >
+>;
+
+type AddMessagesAction = {
+  type: "ADD_MESSAGES";
   value: { channelID: string; messages: Message[] };
 };
 
-type SetLoadingAction = {
-  type: "SET_LOADING";
-  value: boolean;
+type NextMessagesAction = {
+  type: "NEXT_MESSAGES";
+  value: { channelID: string; messages: Message[] };
 };
 
-type ReducerAction = AddMessageAction | SetLoadingAction;
+type ModifyMessagesAction = {
+  type: "MODIFY_MESSAGES";
+  value: { channelID: string; messages: Message[] };
+};
+
+type InitializeAction = {
+  type: "INITIALIZE";
+  value: { channelID: string };
+};
+
+type ReducerAction =
+  | AddMessagesAction
+  | InitializeAction
+  | ModifyMessagesAction
+  | NextMessagesAction;
 
 const MessagesContext = createContext<{
   value: ReducerState;
@@ -31,21 +46,44 @@ const MessagesContext = createContext<{
   dispatch: () => {},
 });
 
-const messagesReducer = () => (state: ReducerState, action: ReducerAction) => {
+const getLastMessageTime = (messages: Message[], currentTime?: Date) => {
+  if (messages.length === 0) return currentTime || START_DATE;
+  return messages[messages.length - 1].createdAt.toDate();
+};
+
+const messagesReducer = (state: ReducerState, action: ReducerAction) => {
   switch (action.type) {
-    case "ADD_MESSAGE":
-      return {
-        loading: false,
-        channels: {
-          ...state.channels,
-          [action.value.channelID]: action.value.messages,
-        },
-      };
-    case "SET_LOADING":
+    case "ADD_MESSAGES": {
+      const { messages } = action.value;
+      const channel = state[action.value.channelID];
+      const lastMessageTime = getLastMessageTime(
+        messages,
+        channel?.lastMessageTime
+      );
+
       return {
         ...state,
-        loading: action.value,
+        [action.value.channelID]: {
+          loading: false,
+          lastMessageTime,
+          messages: [...(channel?.messages || []), ...messages],
+        },
       };
+    }
+    case "NEXT_MESSAGES": {
+      const { messages } = action.value;
+      const channel = state[action.value.channelID];
+      return {
+        ...state,
+        [action.value.channelID]: {
+          ...channel,
+          messages: [...messages, ...(channel?.messages || [])],
+        },
+      };
+    }
+    case "MODIFY_MESSAGES": {
+      return state;
+    }
     default:
       return state;
   }
@@ -53,20 +91,34 @@ const messagesReducer = () => (state: ReducerState, action: ReducerAction) => {
 
 export const useMessageStore = (channelID: string) => {
   const { value, dispatch } = useContext(MessagesContext);
-  const { channels, loading } = value;
-  /* console.log("useMessageStore", channelID, channels); */
+  console.log("useMessageStore", channelID, value);
+
   const addMessages = (messages: Message[]) => {
-    dispatch({ type: "ADD_MESSAGE", value: { channelID, messages } });
+    console.log("ADDMESSAGE TO", channelID);
+    dispatch({ type: "ADD_MESSAGES", value: { channelID, messages } });
   };
 
-  const setLoading = (loading = true) => {
-    dispatch({ type: "SET_LOADING", value: loading });
+  const modifyMessages = (messages: Message[]) => {
+    dispatch({ type: "MODIFY_MESSAGES", value: { channelID, messages } });
   };
+
+  const addNextMessages = (messages: Message[]) => {
+    dispatch({ type: "NEXT_MESSAGES", value: { channelID, messages } });
+  };
+  const channel = value[channelID];
+  console.log(
+    "gonna show this messages",
+    channel?.loading,
+    channel?.messages,
+    channel?.lastMessageTime
+  );
   return {
-    messages: channels[channelID] || [],
-    loading,
+    messages: channel?.messages || [],
+    lastMessageTime: channel?.lastMessageTime || START_DATE,
+    loading: channel?.loading !== undefined ? channel.loading : true,
     addMessages,
-    setLoading,
+    modifyMessages,
+    addNextMessages,
   };
 };
 
@@ -74,10 +126,7 @@ interface MessageContextProviderProps {
   children: React.ReactNode;
 }
 const MessagesContextProvider = ({ children }: MessageContextProviderProps) => {
-  const [value, dispatch] = useReducer(
-    messagesReducer(),
-    messagesInitialeState
-  );
+  const [value, dispatch] = useReducer(messagesReducer, messagesInitialeState);
 
   return (
     <MessagesContext.Provider value={{ value, dispatch }}>

@@ -9,8 +9,6 @@ import { auth, db } from "services/firestore";
 import ListItemGroup from "components/ListItemChannel";
 import { User } from "models/user";
 import Header from "components/Header";
-import { debounce } from "lodash";
-import { deleteChannel } from "services/api/channels";
 import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
@@ -76,6 +74,7 @@ const ChannelScreen = () => {
   const filteredChannels = channels.filter(
     ({ id }) => hiddenChannels[id] !== true
   );
+
   return (
     <div style={{ display: "flex", width: "100%", height: "100%" }}>
       <ResponsiveDrawer

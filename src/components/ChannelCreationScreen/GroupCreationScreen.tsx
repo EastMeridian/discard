@@ -15,8 +15,6 @@ interface Props {
 const isUserSelected = (user: User, users: User[]) =>
   users.some((u) => u.uid === user.uid);
 
-const MAX_SELECTED_USERS = 3;
-
 const GroupCreationScreen = ({ onCreateChannel, style }: Props) => {
   const [selectedUsers, setSelectedusers] = useState<User[]>([]);
   const [{ users, value }, onSearch] = useUserSearch();
@@ -30,10 +28,10 @@ const GroupCreationScreen = ({ onCreateChannel, style }: Props) => {
     if (isUserSelected(user, selectedUsers)) {
       return handleRemoveUser(user);
     }
-    if (selectedUsers.length < MAX_SELECTED_USERS) {
-      setSelectedusers([...selectedUsers, user]);
-    }
+    setSelectedusers([user]);
   };
+
+  const disabled = selectedUsers.length === 0;
 
   return (
     <div
@@ -45,7 +43,7 @@ const GroupCreationScreen = ({ onCreateChannel, style }: Props) => {
     >
       <div style={{ padding: "1rem" }}>
         <Typography variant="h6" component="div">
-          Select some users
+          Select one user
         </Typography>
       </div>
       {selectedUsers.length > 0 && (
@@ -88,6 +86,7 @@ const GroupCreationScreen = ({ onCreateChannel, style }: Props) => {
       >
         <Button
           sx={{ marginTop: "1rem" }}
+          disabled={disabled}
           onClick={() => onCreateChannel(selectedUsers)}
           variant="contained"
         >
