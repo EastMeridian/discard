@@ -1,11 +1,13 @@
 import Button from "@mui/material/Button";
 import React, { useState } from "react";
-import TextInput from "../TextInput";
+import TextInput from "../../components/TextInput";
 import Divider from "@mui/material/Divider";
 import { User } from "models/user";
-import ListItemPickableUser from "./ListItemPickableUser";
+import ListItemPickableUser from "./components/ListItemPickableUser";
 import { useUserSearch } from "hooks/useUserSearch";
 import { Chip, Typography } from "@mui/material";
+import { useTranslation } from "react-i18next";
+import { ScreenContainer, ScrollView, SectionContainer } from "./layouts";
 
 interface Props {
   onCreateChannel: (members: User[]) => void;
@@ -16,6 +18,7 @@ const isUserSelected = (user: User, users: User[]) =>
   users.some((u) => u.uid === user.uid);
 
 const GroupCreationScreen = ({ onCreateChannel, style }: Props) => {
+  const { t } = useTranslation();
   const [selectedUsers, setSelectedusers] = useState<User[]>([]);
   const [{ users, value }, onSearch] = useUserSearch();
 
@@ -34,20 +37,14 @@ const GroupCreationScreen = ({ onCreateChannel, style }: Props) => {
   const disabled = selectedUsers.length === 0;
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        ...style,
-      }}
-    >
-      <div style={{ padding: "1rem" }}>
+    <ScreenContainer style={style}>
+      <SectionContainer>
         <Typography variant="h6" component="div">
-          Select one user
+          {t("channel.select")}
         </Typography>
-      </div>
+      </SectionContainer>
       {selectedUsers.length > 0 && (
-        <div style={{ padding: "1rem" }}>
+        <SectionContainer>
           {selectedUsers.map((user) => (
             <Chip
               label={user.displayName}
@@ -58,19 +55,13 @@ const GroupCreationScreen = ({ onCreateChannel, style }: Props) => {
               sx={{ margin: "0.1rem" }}
             />
           ))}
-        </div>
+        </SectionContainer>
       )}
-      <div style={{ padding: "1rem", display: "flex" }}>
+      <SectionContainer>
         <TextInput value={value} onChange={onSearch} placeholder="Search" />
-      </div>
+      </SectionContainer>
       <Divider />
-      <div
-        style={{
-          overflowY: "scroll",
-          height: "10rem",
-          padding: "0.5rem 0",
-        }}
-      >
+      <ScrollView>
         {users.map((user) => (
           <ListItemPickableUser
             user={user}
@@ -79,21 +70,19 @@ const GroupCreationScreen = ({ onCreateChannel, style }: Props) => {
             onClick={handleSelectUser}
           />
         ))}
-      </div>
+      </ScrollView>
       <Divider />
-      <div
-        style={{ padding: "1rem", display: "flex", flexDirection: "column" }}
-      >
+      <SectionContainer style={{ flexDirection: "column" }}>
         <Button
           sx={{ marginTop: "1rem" }}
           disabled={disabled}
           onClick={() => onCreateChannel(selectedUsers)}
           variant="contained"
         >
-          Create Channel
+          {t("channel.create")}
         </Button>
-      </div>
-    </div>
+      </SectionContainer>
+    </ScreenContainer>
   );
 };
 

@@ -1,6 +1,5 @@
 import { useChat } from "hooks/useChat";
 import { useEffect, useRef, useLayoutEffect } from "react";
-import styled from "styled-components";
 import { auth, db } from "services/firestore";
 import ChatMessage from "components/Message/ChatMessage";
 import ScrollView from "components/ScrollView";
@@ -11,21 +10,15 @@ import { MessageSkeletons } from "components/Message";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useInView } from "react-intersection-observer";
 import RichEditor from "components/RichEditor";
+import { ScreenContainer } from "./layouts";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   channel: Channel;
 }
 
-const MainLayout = styled.main`
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  background-color: white;
-  padding: 0;
-`;
-
 const ChatScreen = ({ channel }: Props) => {
+  const { t } = useTranslation();
   const [user] = useAuthState(auth);
   const bottomCursor = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -39,6 +32,7 @@ const ChatScreen = ({ channel }: Props) => {
     db,
     channelID: channel.id,
   });
+
   const { messages, loading, topReached, lastMessageTime } = data;
 
   useLayoutEffect(() => {
@@ -74,9 +68,8 @@ const ChatScreen = ({ channel }: Props) => {
 
   const isLoadingScreen = loading && !(messages?.length > 1);
 
-  console.log("loading ?", loading);
   return (
-    <MainLayout>
+    <ScreenContainer>
       <ScrollView ref={containerRef}>
         {!isLoadingScreen && topReached && (
           <InitialMessage members={channel?.members || []} />
@@ -95,9 +88,10 @@ const ChatScreen = ({ channel }: Props) => {
         <RichEditor
           onSubmit={(message) => sendMessage(message)}
           channelID={channel.id}
+          placeholder={t("editor.placeholder")}
         />
       </div>
-    </MainLayout>
+    </ScreenContainer>
   );
 };
 

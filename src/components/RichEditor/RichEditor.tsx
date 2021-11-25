@@ -43,9 +43,10 @@ const myKeyBindingFn = (e: KeyboardEvent): string | null => {
 interface Props {
   onSubmit: (text: string) => void;
   channelID?: string;
+  placeholder: string;
 }
 
-const RichEditor = ({ onSubmit, channelID }: Props) => {
+const RichEditor = ({ onSubmit, channelID, placeholder }: Props) => {
   const editorRef = useRef<Editor>(null);
   const matches = useMediaQuery("(max-width:320px)");
   const [displayActions, setDisplayActions] = useState(!matches);
@@ -120,15 +121,11 @@ const RichEditor = ({ onSubmit, channelID }: Props) => {
         <RichEditorContainer>
           <Editor
             ref={editorRef}
-            placeholder={EditorUtils.maybePlaceholder(
-              editorState,
-              "Write something"
-            )}
+            placeholder={EditorUtils.maybePlaceholder(editorState, placeholder)}
             editorState={editorState}
             onChange={onChange}
             handleKeyCommand={handleKeyCommand}
             keyBindingFn={myKeyBindingFn}
-            /* blockStyleFn={myBlockStyleFn} */
           />
         </RichEditorContainer>
         {matches && (

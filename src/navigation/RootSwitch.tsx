@@ -1,5 +1,5 @@
 import PrivateRoute from "navigation/PrivateRoute";
-import LoginPage from "screens/LoginPage";
+import LoginPage from "screens/LoginScreen";
 import { Switch, Route, Redirect } from "react-router-dom";
 import ChannelScreen from "screens/ChannelScreen";
 

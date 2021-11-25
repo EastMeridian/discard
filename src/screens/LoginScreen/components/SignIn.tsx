@@ -1,4 +1,4 @@
-import { Button, Typography } from "@mui/material";
+import { Button } from "@mui/material";
 import {
   GoogleAuthProvider,
   signInWithPopup,
@@ -8,6 +8,7 @@ import {
 import { useHistory, useLocation } from "react-router-dom";
 import { createUser } from "services/api/users";
 import { auth } from "services/firestore";
+import { useTranslation } from "react-i18next";
 
 interface LocationState {
   from: {
@@ -22,6 +23,7 @@ const onSignInSucceed = async ({ user }: UserCredential) => {
 };
 
 const SignIn = () => {
+  const { t } = useTranslation();
   const history = useHistory();
   const location = useLocation<LocationState>();
 
@@ -67,7 +69,7 @@ const SignIn = () => {
           width={16}
           style={{ marginRight: "1rem" }}
         />
-        Continue with google
+        {t("login.signInWithGoogle")}
       </Button>
       <Button
         onClick={signInWithFacebook}
@@ -80,62 +82,10 @@ const SignIn = () => {
           width={16}
           style={{ marginRight: "1rem", paddingLeft: "1rem" }}
         />
-        Continue with facebook
+        {t("login.signInWithFacebook")}
       </Button>
     </div>
   );
 };
 
-const LoginPage = () => {
-  return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "space-between",
-        height: "100%",
-        padding: "2.5rem 1rem",
-        backgroundImage: "url(/blob.svg)",
-        backgroundRepeat: "no-repeat",
-        backgroundPosition: "center",
-        backgroundSize: "90%",
-      }}
-    >
-      <Typography variant="h3">discard</Typography>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        <Typography
-          variant="h3"
-          style={{
-            marginBottom: "1rem",
-            textAlign: "center",
-            width: "32rem",
-            maxWidth: "100%",
-          }}
-        >
-          First of all, connect using a service
-        </Typography>
-        <Typography style={{ marginBottom: "2rem", textAlign: "center" }}>
-          Yes, this is like discord, but cheaper, what you gonna do
-        </Typography>
-        <SignIn />
-      </div>
-      <a
-        href="https://www.privacypolicygenerator.info/live.php?token=YXeF1ojUzIyz3dVI4RIm1vDfsCf86azo"
-        target="_blank"
-        rel="noreferrer"
-        style={{ color: "gray" }}
-      >
-        Privacy & terms
-      </a>
-    </div>
-  );
-};
-
-export default LoginPage;
+export default SignIn;

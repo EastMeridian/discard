@@ -1,4 +1,5 @@
 import React from "react";
+import styled from "styled-components";
 
 interface Props {
   value?: string;
@@ -7,20 +8,21 @@ interface Props {
   style?: React.CSSProperties;
 }
 
+const StyledTextInput = styled.input`
+  border: none;
+  outline: none;
+  flex: 1;
+  background-color: #eaedef;
+  padding: 0.75rem;
+  border-radius: 6px;
+`;
+
 const TextInput = ({ value, onChange, placeholder, style }: Props) => (
-  <input
+  <StyledTextInput
     value={value}
     onChange={(e) => onChange?.(e.target.value)}
     placeholder={placeholder}
-    style={{
-      border: "none",
-      outline: "none",
-      flex: 1,
-      backgroundColor: "#EAEDEF",
-      padding: "0.75rem",
-      borderRadius: "6px",
-      ...style,
-    }}
+    style={style}
   />
 );
 

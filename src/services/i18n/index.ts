@@ -1,23 +1,35 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 
-i18n
-  .use(initReactI18next) // passes i18n down to react-i18next
-  .init({
-    // the translations
-    // (tip move them in a JSON file and import them,
-    // or even better, manage them via a UI: https://react.i18next.com/guides/multiple-translation-files#manage-your-translations-with-a-management-gui)
-    resources: {
-      en: {
-        translation: {
-          "Welcome to React": "Welcome to React and react-i18next",
+i18n.use(initReactI18next).init({
+  resources: {
+    en: {
+      translation: {
+        discard: "discard",
+        login: {
+          sentence1: "First of all, connect using a service",
+          sentence2:
+            "Yes, this is like discord, but cheaper, what you gonna do",
+          signInWithGoogle: "Continue with google",
+          signInWithFacebook: "Continue with facebook",
+          privacyAndTerms: "Privacy & terms",
+          signOut: "Sign Out",
         },
+        editor: {
+          placeholder: "Write something",
+        },
+        channel: {
+          select: "Select one user",
+          create: "Create Channel",
+        },
+        messages: "Messages",
       },
     },
-    lng: "en", // if you're using a language detector, do not define the lng option
-    fallbackLng: "en",
+  },
+  lng: "en",
+  fallbackLng: "en",
 
-    interpolation: {
-      escapeValue: false, // react already safes from xss => https://www.i18next.com/translation-function/interpolation#unescape
-    },
-  });
+  interpolation: {
+    escapeValue: false,
+  },
+});
