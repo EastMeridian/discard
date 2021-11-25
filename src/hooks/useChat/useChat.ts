@@ -27,6 +27,8 @@ type ChatValue = {
   messages: DocumentData | undefined;
   loading: boolean;
   error: FirestoreError | undefined;
+  topReached?: boolean;
+  lastMessageTime: Date;
 };
 
 interface ChatOptions {
@@ -43,13 +45,19 @@ export const useChat = ({
   onMessageSent,
 }: ChatOptions): {
   data: ChatValue;
-  topReached: boolean;
   sendMessage: ChatAction;
   requestNextChunk: () => void;
 } => {
-  const [topReached, setTopReached] = useState(false);
-  const { messages, lastMessageTime, loading, addMessages, addNextMessages } =
-    useMessageStore(channelID);
+  const {
+    messages,
+    lastMessageTime,
+    loading,
+    topReached,
+    addMessages,
+    addNextMessages,
+    setTopReached,
+    setLoading,
+  } = useMessageStore(channelID);
 
   const [error, setError] = useState<FirestoreError>();
 
@@ -80,19 +88,21 @@ export const useChat = ({
   }, [channelID]);
 
   const requestNextChunk = async () => {
-    const nextQuery = createNextMessagesQuery(messagesRef, messages);
-    if (!nextQuery) return setTopReached(true);
-    const snapshots = await getDocs(nextQuery);
     console.log("[requestNextChunk]");
-    if (snapshots.docs.length > 0) {
-      const nextMessages = snapshots.docs.map((doc) => {
-        const id = doc.id;
-        return { id, ...doc.data() } as Message;
-      });
-      addNextMessages(nextMessages);
-      console.log({ nextMessages });
+    if (!topReached) {
+      const nextQuery = createNextMessagesQuery(messagesRef, messages);
+      if (!nextQuery) return setTopReached();
+      setLoading(true);
+      setTimeout(async () => {
+        const snapshots = await getDocs(nextQuery);
+        const nextMessages = snapshots.docs.map((doc) => {
+          const id = doc.id;
+          return { id, ...doc.data() } as Message;
+        });
+        addNextMessages(nextMessages);
+        console.log({ nextMessages });
+      }, 500);
     }
-    if (snapshots.docs.length < 25) setTopReached(true);
   };
 
   const sendMessage = async (text: string) => {
@@ -107,7 +117,7 @@ export const useChat = ({
     }
   };
 
-  const data = { messages, loading, error };
+  const data = { messages, topReached, loading, error, lastMessageTime };
 
-  return { data, topReached, sendMessage, requestNextChunk };
+  return { data, sendMessage, requestNextChunk };
 };

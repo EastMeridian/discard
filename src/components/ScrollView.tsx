@@ -1,3 +1,4 @@
+import { ForwardedRef, forwardRef } from "react";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -16,6 +17,8 @@ const Scroller = styled.div`
   flex: 1 1 auto;
   min-height: 0;
   padding: 0.5rem 0;
+  overflow-anchor: none;
+  flex-grow: 1;
 `;
 
 const ScrollerContent = styled.div`
@@ -29,12 +32,14 @@ interface Props {
   children: React.ReactNode;
 }
 
-const ScrollView = ({ children }: Props) => (
-  <Container>
-    <Scroller>
-      <ScrollerContent>{children}</ScrollerContent>
-    </Scroller>
-  </Container>
+const ScrollView = forwardRef(
+  ({ children }: Props, ref: ForwardedRef<HTMLDivElement>) => (
+    <Container>
+      <Scroller ref={ref}>
+        <ScrollerContent>{children}</ScrollerContent>
+      </Scroller>
+    </Container>
+  )
 );
 
 export default ScrollView;

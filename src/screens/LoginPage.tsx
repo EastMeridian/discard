@@ -6,7 +6,7 @@ import {
   UserCredential,
 } from "firebase/auth";
 import { useHistory, useLocation } from "react-router-dom";
-import { createUser, userExists } from "services/api/users";
+import { createUser } from "services/api/users";
 import { auth } from "services/firestore";
 
 interface LocationState {

@@ -8,7 +8,12 @@ export const messagesInitialeState = {};
 type ReducerState = Partial<
   Record<
     string,
-    { loading?: boolean; lastMessageTime?: Date; messages: Message[] }
+    {
+      loading?: boolean;
+      topReached?: boolean;
+      lastMessageTime?: Date;
+      messages?: Message[];
+    }
   >
 >;
 
@@ -22,21 +27,21 @@ type NextMessagesAction = {
   value: { channelID: string; messages: Message[] };
 };
 
-type ModifyMessagesAction = {
-  type: "MODIFY_MESSAGES";
-  value: { channelID: string; messages: Message[] };
+type SetTopReachedAction = {
+  type: "SET_TOP_REACHED";
+  value: { channelID: string };
 };
 
-type InitializeAction = {
-  type: "INITIALIZE";
-  value: { channelID: string };
+type SetLoadingAction = {
+  type: "SET_LOADING";
+  value: { channelID: string; loading: boolean };
 };
 
 type ReducerAction =
   | AddMessagesAction
-  | InitializeAction
-  | ModifyMessagesAction
-  | NextMessagesAction;
+  | NextMessagesAction
+  | SetTopReachedAction
+  | SetLoadingAction;
 
 const MessagesContext = createContext<{
   value: ReducerState;
@@ -52,10 +57,11 @@ const getLastMessageTime = (messages: Message[], currentTime?: Date) => {
 };
 
 const messagesReducer = (state: ReducerState, action: ReducerAction) => {
+  const channel = state[action.value.channelID];
+  console.log("[messageReducer] next action", action.type);
   switch (action.type) {
     case "ADD_MESSAGES": {
       const { messages } = action.value;
-      const channel = state[action.value.channelID];
       const lastMessageTime = getLastMessageTime(
         messages,
         channel?.lastMessageTime
@@ -66,23 +72,42 @@ const messagesReducer = (state: ReducerState, action: ReducerAction) => {
         [action.value.channelID]: {
           loading: false,
           lastMessageTime,
+          topReached: messages.length < 25,
           messages: [...(channel?.messages || []), ...messages],
         },
       };
     }
     case "NEXT_MESSAGES": {
       const { messages } = action.value;
-      const channel = state[action.value.channelID];
       return {
         ...state,
         [action.value.channelID]: {
           ...channel,
+          loading: false,
+          topReached: messages.length < 25,
           messages: [...messages, ...(channel?.messages || [])],
         },
       };
     }
-    case "MODIFY_MESSAGES": {
-      return state;
+    case "SET_TOP_REACHED": {
+      return {
+        ...state,
+        [action.value.channelID]: {
+          ...channel,
+          topReached: true,
+          loading: false,
+        },
+      };
+    }
+    case "SET_LOADING": {
+      const { loading } = action.value;
+      return {
+        ...state,
+        [action.value.channelID]: {
+          ...channel,
+          loading,
+        },
+      };
     }
     default:
       return state;
@@ -98,13 +123,21 @@ export const useMessageStore = (channelID: string) => {
     dispatch({ type: "ADD_MESSAGES", value: { channelID, messages } });
   };
 
-  const modifyMessages = (messages: Message[]) => {
-    dispatch({ type: "MODIFY_MESSAGES", value: { channelID, messages } });
-  };
-
   const addNextMessages = (messages: Message[]) => {
     dispatch({ type: "NEXT_MESSAGES", value: { channelID, messages } });
   };
+
+  const setTopReached = () => {
+    dispatch({
+      type: "SET_TOP_REACHED",
+      value: { channelID },
+    });
+  };
+
+  const setLoading = (loading: boolean) => {
+    dispatch({ type: "SET_LOADING", value: { channelID, loading } });
+  };
+
   const channel = value[channelID];
   console.log(
     "gonna show this messages",
@@ -116,9 +149,11 @@ export const useMessageStore = (channelID: string) => {
     messages: channel?.messages || [],
     lastMessageTime: channel?.lastMessageTime || START_DATE,
     loading: channel?.loading !== undefined ? channel.loading : true,
+    topReached: channel?.topReached,
     addMessages,
-    modifyMessages,
     addNextMessages,
+    setTopReached,
+    setLoading,
   };
 };
 

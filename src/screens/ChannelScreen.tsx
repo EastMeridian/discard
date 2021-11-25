@@ -29,7 +29,7 @@ function SignOut() {
 
 const ChannelScreen = () => {
   const { hiddenChannels, hideChannel, unhideChannel } = useHiddenChannel();
-  const [{ channels, loading, error }, createChannel] = useChannels(auth, db);
+  const [{ channels, loading }, createChannel] = useChannels(auth, db);
   const [selectedChannel, setSelectedChannel] = useSelectedChannel(channels);
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);

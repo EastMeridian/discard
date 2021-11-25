@@ -1,5 +1,5 @@
 import { useChat } from "hooks/useChat";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useLayoutEffect } from "react";
 import styled from "styled-components";
 import { auth, db } from "services/firestore";
 import ChatMessage from "components/Message/ChatMessage";
@@ -10,7 +10,7 @@ import { Message } from "models/message";
 import { MessageSkeletons } from "components/Message";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useInView } from "react-intersection-observer";
-import TextFieldMessage from "components/TextFieldMessage";
+import RichEditor from "components/RichEditor";
 
 interface Props {
   channel: Channel;
@@ -28,51 +28,75 @@ const MainLayout = styled.main`
 const ChatScreen = ({ channel }: Props) => {
   const [user] = useAuthState(auth);
   const bottomCursor = useRef<HTMLDivElement>(null);
-  const { ref, inView: topCursorInView } = useInView({
+  const containerRef = useRef<HTMLDivElement>(null);
+  const firstElementRef = useRef<Element>();
+
+  const { ref: topCursorRef, inView: topCursorInView } = useInView({
     threshold: 0,
   });
-  const { data, topReached, sendMessage, requestNextChunk } = useChat({
+  const { data, sendMessage, requestNextChunk } = useChat({
     currentUser: user,
     db,
     channelID: channel.id,
   });
-  const { messages, loading } = data;
+  const { messages, loading, topReached, lastMessageTime } = data;
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const { current } = bottomCursor;
     if (current) {
       current.scrollIntoView();
     }
-  }, [messages]);
+  }, [lastMessageTime]);
+
+  useLayoutEffect(() => {
+    const { current } = firstElementRef;
+    if (current) {
+      current.scrollIntoView();
+    }
+  }, [loading]);
+
+  const getFirstMessageElement = () => {
+    // Find all elements in container which will be checked if are in view or not
+    const nodeElements = containerRef.current?.querySelectorAll("[data-item]");
+    const firstChild = nodeElements?.[0];
+    console.log({ nodeElements });
+    return firstChild;
+  };
 
   useEffect(() => {
     console.log("TopCursor is", topCursorInView);
-    if (topCursorInView) {
+    if (topCursorInView && !loading) {
+      firstElementRef.current = getFirstMessageElement();
+      console.log("getFirstMessageElement", getFirstMessageElement());
       requestNextChunk();
     }
-  }, [topCursorInView, requestNextChunk]);
+  }, [topCursorInView, requestNextChunk, loading]);
 
   const isLoadingScreen = loading && !(messages?.length > 1);
 
   console.log("loading ?", loading);
   return (
     <MainLayout>
-      <ScrollView>
+      <ScrollView ref={containerRef}>
         {!isLoadingScreen && topReached && (
           <InitialMessage members={channel?.members || []} />
         )}
-        {!loading && <div ref={ref} />}
         {loading && <MessageSkeletons channelID={channel.id} />}
+        {!loading && <div ref={topCursorRef} />}
         {messages?.map((msg: Message) => (
-          <ChatMessage
-            key={msg.id}
-            message={msg}
-            style={{ marginTop: "0.5rem" }}
-          />
+          <div data-item={true} key={msg.id}>
+            <ChatMessage message={msg} style={{ marginTop: "0.5rem" }} />
+          </div>
         ))}
+
         <div ref={bottomCursor} />
       </ScrollView>
-      <TextFieldMessage onSendMessage={(message) => sendMessage(message)} />
+      <div style={{ padding: "0 0.5rem 1rem 0.5rem" }}>
+        <RichEditor
+          onSubmit={(message) => sendMessage(message)}
+          channelID={channel.id}
+        />
+      </div>
     </MainLayout>
   );
 };
