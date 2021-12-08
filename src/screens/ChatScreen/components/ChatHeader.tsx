@@ -13,7 +13,7 @@ interface Props {
 
 const ChatHeader = ({ members = [], onToggleDrawer }: Props) => {
   const [user] = useAuthState(auth);
-  const classified = classifyMembers(members, user);
+  const { others } = classifyMembers(members, user);
 
   return (
     <Header>
@@ -27,9 +27,9 @@ const ChatHeader = ({ members = [], onToggleDrawer }: Props) => {
         >
           <MenuIcon />
         </IconButton>
-        <AvatarMembersGroup members={classified.members} />
+        <AvatarMembersGroup members={others} />
         <div style={{ marginLeft: "0.5rem" }}>
-          {classified.others.map(({ displayName }) => displayName).join(", ")}
+          {others.map(({ displayName }) => displayName).join(", ")}
         </div>
       </div>
     </Header>

@@ -96,7 +96,16 @@ const ChannelScreen = () => {
         onClose={handleDrawerToggle}
       >
         <MenuContainer>
-          <Header></Header>
+          <Header style={{ justifyContent: "flex-start" }}>
+            <img
+              src="/logo.png"
+              height="32px"
+              width="32px"
+              alt=""
+              style={{ marginRight: "0.5rem" }}
+            />
+            <Typography variant="h5">{t("discard")}</Typography>
+          </Header>
           <MenuHeaderContainer>
             <Typography variant="h6" gutterBottom component="div">
               {t("messages")}

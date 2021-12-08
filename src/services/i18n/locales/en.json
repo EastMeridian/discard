@@ -1,0 +1,21 @@
+{
+  "translation": {
+    "discard": "discard",
+    "login": {
+      "sentence1": "First of all, connect using a service",
+      "sentence2": "Yes, this is like discord, but cheaper, what you gonna do",
+      "signInWithGoogle": "Continue with google",
+      "signInWithFacebook": "Continue with facebook",
+      "privacyAndTerms": "Privacy & terms",
+      "signOut": "Sign Out"
+    },
+    "editor": {
+      "placeholder": "Write something"
+    },
+    "channel": {
+      "select": "Select one user",
+      "create": "Create Channel"
+    },
+    "messages": "Messages"
+  }
+}

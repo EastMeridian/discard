@@ -21,7 +21,16 @@ const LoginScreen = () => {
 
   return (
     <ScreenContainer>
-      <Typography variant="h3">{t("discard")}</Typography>
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <img
+          src="/logo.png"
+          height="40px"
+          width="40px"
+          alt=""
+          style={{ marginRight: "0.5rem" }}
+        />
+        <Typography variant="h3">{t("discard")}</Typography>
+      </div>
       <CenterLayout>
         <Typography variant="h3" style={sentence1Style}>
           {t("login.sentence1")}

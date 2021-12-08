@@ -13,7 +13,7 @@ const AvatarMembersGroup = ({ members, style, max = 3 }: Props) => (
   <AvatarGroup max={max} className="avatar-group">
     {members.map((member) => (
       <Avatar
-        src={member.photoURL || undefined}
+        src={member?.photoURL || undefined}
         key={member.uid}
         style={style}
         alt={member.displayName || "user"}
