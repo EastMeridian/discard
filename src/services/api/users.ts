@@ -50,7 +50,6 @@ export const getUser = ({ uid, displayName, photoURL, email }: AuthUser) => ({
 export const searchUser = async (text: string) => {
   const usersRef = collection(db, "users");
 
-  console.log("TEXT", { text });
   const q = query(
     usersRef,
     orderBy("displayName"),

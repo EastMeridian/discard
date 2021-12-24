@@ -53,12 +53,10 @@ const ChatScreen = ({ channel }: Props) => {
     // Find all elements in container which will be checked if are in view or not
     const nodeElements = containerRef.current?.querySelectorAll("[data-item]");
     const firstChild = nodeElements?.[0];
-    console.log({ nodeElements });
     return firstChild;
   };
 
   useEffect(() => {
-    console.log("TopCursor is", topCursorInView);
     if (topCursorInView && !loading) {
       firstElementRef.current = getFirstMessageElement();
       console.log("getFirstMessageElement", getFirstMessageElement());

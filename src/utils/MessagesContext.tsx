@@ -119,7 +119,6 @@ export const useMessageStore = (channelID: string) => {
   console.log("useMessageStore", channelID, value);
 
   const addMessages = (messages: Message[]) => {
-    console.log("ADDMESSAGE TO", channelID);
     dispatch({ type: "ADD_MESSAGES", value: { channelID, messages } });
   };
 
@@ -139,12 +138,7 @@ export const useMessageStore = (channelID: string) => {
   };
 
   const channel = value[channelID];
-  console.log(
-    "gonna show this messages",
-    channel?.loading,
-    channel?.messages,
-    channel?.lastMessageTime
-  );
+
   return {
     messages: channel?.messages || [],
     lastMessageTime: channel?.lastMessageTime || START_DATE,

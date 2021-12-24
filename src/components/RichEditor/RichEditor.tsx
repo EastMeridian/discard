@@ -5,7 +5,6 @@ import {
   KeyBindingUtil,
   getDefaultKeyBinding,
   convertToRaw,
-  ContentBlock,
 } from "draft-js";
 import IconButton from "@mui/material/IconButton";
 import AddIcon from "@mui/icons-material/Add";
@@ -23,11 +22,11 @@ import { EditorUtils } from "./EditorUtils";
 
 const { isSoftNewlineEvent } = KeyBindingUtil;
 
-function myBlockStyleFn(contentBlock: ContentBlock) {
+/* function myBlockStyleFn(contentBlock: ContentBlock) {
   const type = contentBlock.getType();
   console.log({ type });
   return null;
-}
+} */
 
 const myKeyBindingFn = (e: KeyboardEvent): string | null => {
   if (isSoftNewlineEvent(e)) {
@@ -55,9 +54,9 @@ const RichEditor = ({ onSubmit, channelID, placeholder }: Props) => {
   );
 
   useEffect(() => {
-    console.log("useEffect enter");
     setEditorState(EditorUtils.getResetEditorState(editorState));
     onFocus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [channelID]);
 
   useEffect(() => {
@@ -77,7 +76,6 @@ const RichEditor = ({ onSubmit, channelID, placeholder }: Props) => {
     const value = blocks
       .map((block) => (!block.text.trim() && "\n") || block.text)
       .join("\n");
-    console.log("[SUBMIT]", value);
     onSubmit(value);
     flushEditorState();
   };

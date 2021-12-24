@@ -1,3 +1,4 @@
+import { useSnapshotManager } from "../useSnapshotManager";
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Channel } from "models/channel";
 import { createMessage } from "services/api/messages";
@@ -12,10 +13,11 @@ import {
   onSnapshot,
   where,
   getDocs,
+  QuerySnapshot,
 } from "firebase/firestore";
 import { User } from "firebase/auth";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useMessageStore } from "utils/MessagesContext";
 import { dispatchMessageSnapshot } from "./utils";
 import { createNextMessagesQuery } from "utils/createNextMessageQuery";
@@ -70,22 +72,16 @@ export const useChat = ({
     limitToLast(25)
   );
 
-  useEffect(() => {
-    /* console.log("[subscribe]"); */
-    console.log("subscribe with date: ", messages, lastMessageTime, channelID);
-    const unsubscribe = onSnapshot(messageQuery, (snapshot) => {
-      const lastVisible = snapshot.docs[snapshot.docs.length - 1];
-      console.log({ lastVisible }, snapshot.docs.length);
+  const onNextSnapshot = (snapshot: QuerySnapshot<DocumentData>) => {
+    const lastVisible = snapshot.docs[snapshot.docs.length - 1];
+    console.log({ lastVisible }, snapshot.docs.length);
 
-      const { added, modified } = dispatchMessageSnapshot(snapshot);
-      console.log("length", added.length, modified.length);
-      addMessages(added);
-    });
-    return () => {
-      /* console.log("[unsubscribe]"); */
-      unsubscribe();
-    };
-  }, [channelID]);
+    const { added, modified } = dispatchMessageSnapshot(snapshot);
+    console.log("length", added.length, modified.length);
+    addMessages(added);
+  };
+
+  useSnapshotManager(channelID, messageQuery, onNextSnapshot);
 
   const requestNextChunk = async () => {
     console.log("[requestNextChunk]");
