@@ -52,7 +52,7 @@ const MessagesContext = createContext<{
 });
 
 const getLastMessageTime = (messages: Message[], currentTime?: Date) => {
-  if (messages.length === 0) return currentTime || START_DATE;
+  if (messages.length === 0) return currentTime;
   return messages[messages.length - 1].createdAt.toDate();
 };
 
@@ -64,7 +64,7 @@ const messagesReducer = (state: ReducerState, action: ReducerAction) => {
       const { messages } = action.value;
       const lastMessageTime = getLastMessageTime(
         messages,
-        channel?.lastMessageTime
+        channel?.lastMessageTime || START_DATE
       );
 
       return {

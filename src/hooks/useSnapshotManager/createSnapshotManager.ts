@@ -13,9 +13,8 @@ export const createSnapshotManager = (maxIDs: number) => {
   };
 
   const add = (channelID: string, unsubscribe: Unsubscribe) => {
-    if (IDs.includes(channelID)) return;
     const hasReachedLimit = IDs.length >= maxIDs;
-
+    if (IDs.includes(channelID)) return;
     if (hasReachedLimit) {
       pop();
     }

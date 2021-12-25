@@ -8,14 +8,18 @@ import {
 import { useEffect, useRef } from "react";
 import { createSnapshotManager } from "./createSnapshotManager";
 
-const MAX_LISTENERS = 50;
+const MAX_LISTENERS = 60;
 
 export const useSnapshotManager = (
-  channelID: string,
-  query: Query<DocumentData>,
+  options: {
+    channelID: string;
+    query: Query<DocumentData>;
+    maxListeners: number;
+  },
   onNext: (snapshot: QuerySnapshot<DocumentData>) => void
 ) => {
-  const managerRef = useRef(createSnapshotManager(MAX_LISTENERS));
+  const { channelID, query, maxListeners = MAX_LISTENERS } = options;
+  const managerRef = useRef(createSnapshotManager(maxListeners));
 
   useEffect(() => {
     const manager = managerRef.current;
