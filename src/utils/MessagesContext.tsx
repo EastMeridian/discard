@@ -114,30 +114,30 @@ const messagesReducer = (state: ReducerState, action: ReducerAction) => {
   }
 };
 
-export const useMessageStore = (channelID: string) => {
+export const useMessageStore = (selectedChannelID: string) => {
   const { value, dispatch } = useContext(MessagesContext);
-  console.log("useMessageStore", channelID, value);
+  console.log("useMessageStore", { selectedChannelID, value });
 
-  const addMessages = (messages: Message[]) => {
+  const addMessages = (channelID: string, messages: Message[]) => {
     dispatch({ type: "ADD_MESSAGES", value: { channelID, messages } });
   };
 
-  const addNextMessages = (messages: Message[]) => {
+  const addNextMessages = (channelID: string, messages: Message[]) => {
     dispatch({ type: "NEXT_MESSAGES", value: { channelID, messages } });
   };
 
-  const setTopReached = () => {
+  const setTopReached = (channelID: string) => {
     dispatch({
       type: "SET_TOP_REACHED",
       value: { channelID },
     });
   };
 
-  const setLoading = (loading: boolean) => {
+  const setLoading = (channelID: string, loading: boolean) => {
     dispatch({ type: "SET_LOADING", value: { channelID, loading } });
   };
 
-  const channel = value[channelID];
+  const channel = value[selectedChannelID];
 
   return {
     messages: channel?.messages || [],

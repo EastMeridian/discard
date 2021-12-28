@@ -10,14 +10,13 @@ import {
   Firestore,
   DocumentData,
   FirestoreError,
-  onSnapshot,
   where,
   getDocs,
   QuerySnapshot,
 } from "firebase/firestore";
 import { User } from "firebase/auth";
 
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import { useMessageStore } from "utils/MessagesContext";
 import { dispatchMessageSnapshot } from "./utils";
 import { createNextMessagesQuery } from "utils/createNextMessageQuery";
@@ -38,6 +37,7 @@ interface ChatOptions {
   db: Firestore;
   channelID: Channel["id"];
   onMessageSent?: () => void;
+  nextChunkDelay?: number;
 }
 
 export const useChat = ({
@@ -45,6 +45,7 @@ export const useChat = ({
   db,
   channelID,
   onMessageSent,
+  nextChunkDelay = 250,
 }: ChatOptions): {
   data: ChatValue;
   sendMessage: ChatAction;
@@ -72,32 +73,32 @@ export const useChat = ({
     limitToLast(25)
   );
 
-  const onNextSnapshot = (snapshot: QuerySnapshot<DocumentData>) => {
-    const lastVisible = snapshot.docs[snapshot.docs.length - 1];
-    console.log({ lastVisible }, snapshot.docs.length);
+  useSnapshotManager(
+    { channelID, query: messageQuery },
+    (snapshot: QuerySnapshot<DocumentData>) => {
+      const lastVisible = snapshot.docs[snapshot.docs.length - 1];
+      console.log({ lastVisible }, snapshot, snapshot.docs.length);
 
-    const { added, modified } = dispatchMessageSnapshot(snapshot);
-    console.log("length", added.length, modified.length);
-    addMessages(added);
-  };
-
-  useSnapshotManager(channelID, messageQuery, onNextSnapshot);
+      const { added, modified } = dispatchMessageSnapshot(snapshot);
+      console.log("length", channelID, added.length, modified.length);
+      addMessages(channelID, added);
+    }
+  );
 
   const requestNextChunk = async () => {
-    console.log("[requestNextChunk]");
     if (!topReached) {
       const nextQuery = createNextMessagesQuery(messagesRef, messages);
-      if (!nextQuery) return setTopReached();
-      setLoading(true);
+      if (!nextQuery) return setTopReached(channelID);
+      setLoading(channelID, true);
       setTimeout(async () => {
         const snapshots = await getDocs(nextQuery);
         const nextMessages = snapshots.docs.map((doc) => {
           const id = doc.id;
           return { id, ...doc.data() } as Message;
         });
-        addNextMessages(nextMessages);
+        addNextMessages(channelID, nextMessages);
         console.log({ nextMessages });
-      }, 500);
+      }, nextChunkDelay);
     }
   };
 

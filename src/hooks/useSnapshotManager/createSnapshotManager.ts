@@ -4,6 +4,10 @@ export const createSnapshotManager = (maxIDs: number) => {
   const IDs: string[] = [];
   const listeners: Record<string, Unsubscribe> = {};
 
+  const hasReachedLimit = () => IDs.length >= maxIDs;
+
+  const exist = (channelID: string) => IDs.includes(channelID);
+
   const pop = () => {
     const channelID = IDs.pop();
     if (channelID) {
@@ -13,9 +17,8 @@ export const createSnapshotManager = (maxIDs: number) => {
   };
 
   const add = (channelID: string, unsubscribe: Unsubscribe) => {
-    const hasReachedLimit = IDs.length >= maxIDs;
-    if (IDs.includes(channelID)) return;
-    if (hasReachedLimit) {
+    if (exist(channelID)) return;
+    if (hasReachedLimit()) {
       pop();
     }
     IDs.push(channelID);
@@ -31,6 +34,8 @@ export const createSnapshotManager = (maxIDs: number) => {
   return {
     add,
     clear,
+    hasReachedLimit,
+    exist,
     value: {
       IDs,
       listeners,
