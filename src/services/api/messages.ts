@@ -21,7 +21,7 @@ export const createMessage = async ({
 
   const message = await addDoc(messagesRef, {
     uid,
-    text: text.trim(),
+    text,
     displayName,
     photoURL,
     createdAt: serverTimestamp(),

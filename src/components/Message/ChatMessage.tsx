@@ -1,4 +1,6 @@
 import { Avatar, Typography } from "@mui/material";
+import { Editor, convertFromRaw, EditorState } from "draft-js";
+import { noop } from "lodash";
 import { Message } from "models/message";
 import styled from "styled-components";
 
@@ -25,12 +27,17 @@ export const MessageContentContainer = styled.div`
 const ChatMessage = ({ message, style }: MessageProps) => {
   const { text, photoURL, displayName } = message;
 
+  const contentState = convertFromRaw(text);
+  const editorState = EditorState.createWithContent(contentState);
+
   return (
     <Container style={style}>
       <Avatar src={photoURL || undefined} alt={displayName || "user"} />
       <MessageContentContainer>
         <Typography>{displayName}</Typography>
-        <div>{text}</div>
+        <div>
+          <Editor editorState={editorState} readOnly={true} onChange={noop} />
+        </div>
       </MessageContentContainer>
     </Container>
   );

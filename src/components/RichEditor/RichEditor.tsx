@@ -5,6 +5,7 @@ import {
   KeyBindingUtil,
   getDefaultKeyBinding,
   convertToRaw,
+  RawDraftContentState,
 } from "draft-js";
 import IconButton from "@mui/material/IconButton";
 import AddIcon from "@mui/icons-material/Add";
@@ -40,7 +41,7 @@ const myKeyBindingFn = (e: KeyboardEvent): string | null => {
 };
 
 interface Props {
-  onSubmit: (text: string) => void;
+  onSubmit: (raw: RawDraftContentState) => void;
   channelID?: string;
   placeholder: string;
 }
@@ -72,11 +73,11 @@ const RichEditor = ({ onSubmit, channelID, placeholder }: Props) => {
   };
 
   const onSubmitContent = (editorState: EditorState) => {
-    const blocks = convertToRaw(editorState.getCurrentContent()).blocks;
-    const value = blocks
+    const raw = convertToRaw(editorState.getCurrentContent());
+    /*     const value = blocks
       .map((block) => (!block.text.trim() && "\n") || block.text)
-      .join("\n");
-    onSubmit(value);
+      .join("\n"); */
+    onSubmit(raw);
     flushEditorState();
   };
 

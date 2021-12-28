@@ -21,8 +21,9 @@ import { useMessageStore } from "utils/MessagesContext";
 import { dispatchMessageSnapshot } from "./utils";
 import { createNextMessagesQuery } from "utils/createNextMessageQuery";
 import { Message } from "models/message";
+import { RawDraftContentState } from "draft-js";
 
-type ChatAction = (text: string) => void;
+type ChatAction = (text: RawDraftContentState) => void;
 
 type ChatValue = {
   messages: DocumentData | undefined;
@@ -102,7 +103,7 @@ export const useChat = ({
     }
   };
 
-  const sendMessage = async (text: string) => {
+  const sendMessage = async (text: RawDraftContentState) => {
     if (currentUser) {
       try {
         const { uid, photoURL, displayName } = currentUser;
