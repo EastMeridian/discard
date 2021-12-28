@@ -74,9 +74,6 @@ const RichEditor = ({ onSubmit, channelID, placeholder }: Props) => {
 
   const onSubmitContent = (editorState: EditorState) => {
     const raw = convertToRaw(editorState.getCurrentContent());
-    /*     const value = blocks
-      .map((block) => (!block.text.trim() && "\n") || block.text)
-      .join("\n"); */
     onSubmit(raw);
     flushEditorState();
   };
