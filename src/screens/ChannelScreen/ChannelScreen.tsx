@@ -9,12 +9,12 @@ import Tooltip from "@mui/material/Tooltip";
 import AddIcon from "@mui/icons-material/Add";
 import { Channel } from "models/channel";
 import { User } from "models/user";
-import ChatHeader from "screens/ChatScreen/components/ChatHeader";
-import ResponsiveDrawer from "components/ResponsiveDrawer";
-import ResponsivePopover from "components/ResponsivePopover";
-import ListItemGroup from "components/ListItemChannel";
-import Header from "components/Header";
-import ChannelCreationScreen from "screens/ChannelCreationScreen";
+import ChatHeader from "components/organims/ChatScreen/components/ChatHeader";
+import ResponsiveDrawer from "components/molecules/ResponsiveDrawer";
+import ResponsivePopover from "components/molecules/ResponsivePopover";
+import ListItemGroup from "components/organims/ListItemChannel";
+import Header from "components/atoms/Header";
+import ChannelCreationScreen from "components/organims/ChannelCreationScreen";
 import { useSelectedChannel } from "hooks/useSelectedChannel";
 import { useHiddenChannel } from "hooks/useHiddenChannel";
 import { useTranslation } from "react-i18next";
@@ -27,7 +27,7 @@ import {
   MenuHeaderContainer,
   ScreenContainer,
 } from "./layouts";
-import ChatScreen from "../ChatScreen";
+import ChatScreen from "../../components/organims/ChatScreen";
 import ChannelScreenSkeletons from "./components/ChannelScreenSkeletons";
 
 function SignOut() {

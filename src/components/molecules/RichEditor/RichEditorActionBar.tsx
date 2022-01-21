@@ -22,7 +22,7 @@ export interface RichEditorActionBarProps {
   onFormatStyle?: (nextFormat: string) => void;
   onFormatBlock?: (nextBlock: string) => void;
   onClickAttachFile?: () => void;
-  onClickEmoji?: () => void;
+  onClickEmoji?: React.MouseEventHandler<HTMLButtonElement>;
   onClickSubmit?: () => void;
   submitDisabled?: boolean;
   shouldDisplaySubmit?: boolean;
@@ -83,7 +83,13 @@ const RichEditorActionBar = ({
         <IconButton onClick={onClickAttachFile} size="small">
           <AttachFileIcon />
         </IconButton>
-        <IconButton onClick={onClickEmoji} size="small">
+        <IconButton
+          onClick={onClickEmoji}
+          size="small"
+          sx={{
+            display: { xs: "none", sm: "flex" },
+          }}
+        >
           <EmojiEmotionsIcon />
         </IconButton>
         {shouldDisplaySubmit && (

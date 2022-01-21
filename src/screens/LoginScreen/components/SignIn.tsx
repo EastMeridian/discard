@@ -52,10 +52,9 @@ const SignIn = () => {
   return (
     <div
       style={{
-        width: "24rem",
+        maxWidth: "24rem",
         display: "flex",
         flexDirection: "column",
-        maxWidth: "100%",
       }}
     >
       <Button

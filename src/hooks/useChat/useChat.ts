@@ -16,7 +16,7 @@ import {
 } from "firebase/firestore";
 import { User } from "firebase/auth";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useMessageStore } from "utils/MessagesContext";
 import { dispatchMessageSnapshot } from "./utils";
 import { createNextMessagesQuery } from "utils/createNextMessageQuery";
@@ -115,7 +115,23 @@ export const useChat = ({
     }
   };
 
-  const data = { messages, topReached, loading, error, lastMessageTime };
+  const data = useMemo(
+    () => ({
+      messages,
+      topReached,
+      loading,
+      error,
+      lastMessageTime,
+    }),
+    [lastMessageTime, loading]
+  );
 
-  return { data, sendMessage, requestNextChunk };
+  return useMemo(
+    () => ({
+      data,
+      sendMessage,
+      requestNextChunk,
+    }),
+    [data]
+  );
 };

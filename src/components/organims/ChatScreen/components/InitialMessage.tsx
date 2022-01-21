@@ -1,5 +1,5 @@
 import { Typography } from "@mui/material";
-import AvatarMembersGroup from "components/AvatarMembersGroup";
+import AvatarMembersGroup from "components/molecules/AvatarMembersGroup";
 import { User } from "models/user";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "services/firestore";

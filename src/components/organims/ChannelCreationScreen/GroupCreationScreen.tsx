@@ -1,6 +1,6 @@
 import Button from "@mui/material/Button";
 import React, { useState } from "react";
-import TextInput from "../../components/TextInput";
+import TextInput from "../../atoms/TextInput";
 import Divider from "@mui/material/Divider";
 import { User } from "models/user";
 import ListItemPickableUser from "./components/ListItemPickableUser";

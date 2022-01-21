@@ -1,4 +1,4 @@
-import { EditorState, Modifier, RichUtils } from "draft-js";
+import { convertToRaw, EditorState, Modifier, RichUtils } from "draft-js";
 
 export class EditorUtils {
   static maybePlaceholder = (editorState: EditorState, placeholder: string) => {
@@ -30,22 +30,57 @@ export class EditorUtils {
 
   static getResetEditorState = (editorState: EditorState) => {
     const blocks = editorState.getCurrentContent().getBlockMap().toList();
+    console.log({ blocks });
     const updatedSelection = editorState.getSelection().merge({
       anchorKey: blocks.first().get("key"),
       anchorOffset: 0,
       focusKey: blocks.last().get("key"),
       focusOffset: blocks.last().getLength(),
     });
+    console.log({ updatedSelection });
+
     const newContentState = Modifier.removeRange(
       editorState.getCurrentContent(),
       updatedSelection,
       "forward"
     );
+    console.log({ newContentState });
+
     const newState = EditorState.push(
       editorState,
       newContentState,
       "remove-range"
     );
-    return this.removeSelectedBlocksStyle(newState);
+
+    console.log({
+      newState,
+      hasText: newState.getCurrentContent().hasText(),
+      oldraw: convertToRaw(editorState.getCurrentContent()),
+      nextraw: convertToRaw(newState.getCurrentContent()),
+    });
+
+    return newState; /* this.removeSelectedBlocksStyle(newState); */
+  };
+
+  static insertCharacter = (
+    characterToInsert: string,
+    editorState: EditorState
+  ) => {
+    const newContent = Modifier.replaceText(
+      editorState.getCurrentContent(),
+      editorState.getSelection(),
+      characterToInsert
+    );
+
+    const newEditorState = EditorState.push(
+      editorState,
+      newContent,
+      "insert-characters"
+    );
+
+    return EditorState.forceSelection(
+      newEditorState,
+      newContent.getSelectionAfter()
+    );
   };
 }

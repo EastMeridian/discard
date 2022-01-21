@@ -1,15 +1,15 @@
 import { useChat } from "hooks/useChat";
 import { useEffect, useRef, useLayoutEffect } from "react";
 import { auth, db } from "services/firestore";
-import ChatMessage from "components/Message/ChatMessage";
-import ScrollView from "components/ScrollView";
+import ChatMessage from "components/molecules/Message/ChatMessage";
+import ScrollView from "components/templates/ScrollView";
 import { Channel } from "models/channel";
 import InitialMessage from "./components/InitialMessage";
 import { Message } from "models/message";
-import { MessageSkeletons } from "components/Message";
+import { MessageSkeletons } from "components/molecules/Message";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useInView } from "react-intersection-observer";
-import RichEditor from "components/RichEditor";
+import RichEditor from "components/molecules/RichEditor";
 import { ScreenContainer } from "./layouts";
 import { useTranslation } from "react-i18next";
 

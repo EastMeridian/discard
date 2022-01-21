@@ -9,7 +9,7 @@ import {
 } from "draft-js";
 import IconButton from "@mui/material/IconButton";
 import AddIcon from "@mui/icons-material/Add";
-import React, { KeyboardEvent, useEffect, useRef, useState } from "react";
+import { KeyboardEvent, useEffect, useRef, useState } from "react";
 import "draft-js/dist/Draft.css";
 import {
   RichEditorContainer,
@@ -17,9 +17,10 @@ import {
   RichEditorPaper,
 } from "./layouts";
 import RichEditorActionBar from "./RichEditorActionBar";
-import { Divider, useMediaQuery } from "@mui/material";
+import { Divider, Popover, useMediaQuery } from "@mui/material";
 import SendButton from "./SendButton";
 import { EditorUtils } from "./EditorUtils";
+import EmojiList from "components/molecules/EmojiList";
 
 const { isSoftNewlineEvent } = KeyBindingUtil;
 
@@ -47,16 +48,24 @@ interface Props {
 }
 
 const RichEditor = ({ onSubmit, channelID, placeholder }: Props) => {
+  console.log("RENDER", channelID);
   const editorRef = useRef<Editor>(null);
   const matches = useMediaQuery("(max-width:320px)");
   const [displayActions, setDisplayActions] = useState(!matches);
+  const focusedRef = useRef(false);
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [editorState, setEditorState] = useState(() =>
     EditorState.createEmpty()
   );
 
   useEffect(() => {
-    setEditorState(EditorUtils.getResetEditorState(editorState));
-    onFocus();
+    console.log(
+      "FLUSH EDITOR before",
+      editorState,
+      editorState.getCurrentContent().hasText()
+    );
+    flushEditorState();
+    setTimeout(() => onFocus(), 100);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [channelID]);
 
@@ -65,6 +74,7 @@ const RichEditor = ({ onSubmit, channelID, placeholder }: Props) => {
   }, [matches]);
 
   const onChange = (value: EditorState) => {
+    console.log("ONCHANGE", convertToRaw(value.getCurrentContent()));
     setEditorState(value);
   };
 
@@ -95,13 +105,21 @@ const RichEditor = ({ onSubmit, channelID, placeholder }: Props) => {
 
   const onFocus = () => {
     const editor = editorRef.current;
-    if (editor) {
+    const focused = focusedRef.current;
+    console.log({ editor, focused });
+    if (editor && !focused) {
       editor.focus();
-      RichUtils.toggleInlineStyle(editorState, "BOLD");
     }
   };
 
+  const onSelectEmoji = (emoji: string) => {
+    const newEditorState = EditorUtils.insertCharacter(emoji, editorState);
+    setEditorState(newEditorState);
+  };
+
   const sendDisabled = !editorState.getCurrentContent().hasText();
+
+  const popoverOpen = Boolean(anchorEl);
 
   return (
     <RichEditorPaper onFocus={onFocus}>
@@ -122,6 +140,8 @@ const RichEditor = ({ onSubmit, channelID, placeholder }: Props) => {
             onChange={onChange}
             handleKeyCommand={handleKeyCommand}
             keyBindingFn={myKeyBindingFn}
+            onFocus={() => (focusedRef.current = true)}
+            onBlur={() => (focusedRef.current = false)}
           />
         </RichEditorContainer>
         {matches && (
@@ -144,13 +164,40 @@ const RichEditor = ({ onSubmit, channelID, placeholder }: Props) => {
               setEditorState(RichUtils.toggleBlockType(editorState, format))
             }
             onClickAttachFile={() => {}}
-            onClickEmoji={() => {}}
+            onClickEmoji={(event: React.MouseEvent<HTMLButtonElement>) => {
+              setAnchorEl(event.currentTarget);
+            }}
             onClickSubmit={() => onSubmitContent(editorState)}
             submitDisabled={sendDisabled}
             shouldDisplaySubmit={!matches}
           />
         </>
       )}
+      <Popover
+        id={popoverOpen ? "icons-popover" : undefined}
+        open={popoverOpen}
+        anchorEl={anchorEl}
+        onClose={() => setAnchorEl(null)}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "center",
+        }}
+        transformOrigin={{
+          vertical: "bottom",
+          horizontal: "right",
+        }}
+      >
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(8, 1fr)",
+            padding: "1rem",
+            height: "24rem",
+          }}
+        >
+          <EmojiList onClick={onSelectEmoji} />
+        </div>
+      </Popover>
     </RichEditorPaper>
   );
 };

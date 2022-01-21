@@ -1,7 +1,7 @@
-import Header from "components/Header";
+import Header from "components/atoms/Header";
 import { User } from "models/user";
 import { classifyMembers } from "utils/members";
-import AvatarMembersGroup from "components/AvatarMembersGroup";
+import AvatarMembersGroup from "components/molecules/AvatarMembersGroup";
 import MenuIcon from "@mui/icons-material/Menu";
 import IconButton from "@mui/material/IconButton";
 import { useAuthState } from "react-firebase-hooks/auth";

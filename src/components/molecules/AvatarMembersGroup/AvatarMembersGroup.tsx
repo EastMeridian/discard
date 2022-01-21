@@ -1,8 +1,7 @@
 import AvatarGroup from "@mui/material/AvatarGroup";
 import Avatar from "@mui/material/Avatar";
-import "./AvatarGroup.css";
 import { User } from "models/user";
-
+import "./AvatarGroup.css";
 interface Props {
   members: User[];
   style?: React.CSSProperties;

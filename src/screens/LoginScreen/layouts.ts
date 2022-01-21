@@ -6,7 +6,7 @@ export const ScreenContainer = styled.div`
   align-items: center;
   justify-content: space-between;
   height: 100%;
-  padding: 2.5rem 1rem;
+  padding: 2rem 1rem;
   background-image: url(/blob.svg);
   background-repeat: no-repeat;
   background-position: center;
@@ -17,6 +17,7 @@ export const CenterLayout = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
 `;
 
 export const PrivacyAndTermsLink = styled.a`
