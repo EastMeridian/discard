@@ -2,6 +2,8 @@ import React from "react";
 import emojis from "constants/emojis";
 import styled from "styled-components";
 
+console.log("EmojiListFile loaded");
+
 const EmojiButton = styled.div`
   font-size: 2rem;
   line-height: 0;

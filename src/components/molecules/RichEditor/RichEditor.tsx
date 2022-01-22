@@ -9,7 +9,14 @@ import {
 } from "draft-js";
 import IconButton from "@mui/material/IconButton";
 import AddIcon from "@mui/icons-material/Add";
-import { KeyboardEvent, useEffect, useRef, useState } from "react";
+import {
+  KeyboardEvent,
+  lazy,
+  Suspense,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import "draft-js/dist/Draft.css";
 import {
   RichEditorContainer,
@@ -20,7 +27,9 @@ import RichEditorActionBar from "./RichEditorActionBar";
 import { Divider, Popover, useMediaQuery } from "@mui/material";
 import SendButton from "./SendButton";
 import { EditorUtils } from "./EditorUtils";
-import EmojiList from "components/molecules/EmojiList";
+import EmojiListSkeleton from "../EmojiList/EmojiListSkeleton";
+
+const EmojiList = lazy(() => import("components/molecules/EmojiList"));
 
 const { isSoftNewlineEvent } = KeyBindingUtil;
 
@@ -187,16 +196,21 @@ const RichEditor = ({ onSubmit, channelID, placeholder }: Props) => {
           horizontal: "right",
         }}
       >
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(8, 1fr)",
-            padding: "1rem",
-            height: "24rem",
-          }}
-        >
-          <EmojiList onClick={onSelectEmoji} />
-        </div>
+        {popoverOpen && (
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(8, 1fr)",
+              padding: "1rem",
+              height: "24rem",
+              minWidth: "24rem",
+            }}
+          >
+            <Suspense fallback={EmojiListSkeleton}>
+              <EmojiList onClick={onSelectEmoji} />
+            </Suspense>
+          </div>
+        )}
       </Popover>
     </RichEditorPaper>
   );
