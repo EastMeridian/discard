@@ -23,21 +23,15 @@ import {
   RichEditorLayout,
   RichEditorPaper,
 } from "./layouts";
-import RichEditorActionBar from "./RichEditorActionBar";
+import RichEditorActionBar from "./components/RichEditorActionBar";
 import { Divider, Popover, useMediaQuery } from "@mui/material";
-import SendButton from "./SendButton";
+import SendButton from "./components/SendButton";
 import { EditorUtils } from "./EditorUtils";
 import EmojiListSkeleton from "../EmojiList/EmojiListSkeleton";
 
 const EmojiList = lazy(() => import("components/molecules/EmojiList"));
 
 const { isSoftNewlineEvent } = KeyBindingUtil;
-
-/* function myBlockStyleFn(contentBlock: ContentBlock) {
-  const type = contentBlock.getType();
-  console.log({ type });
-  return null;
-} */
 
 const myKeyBindingFn = (e: KeyboardEvent): string | null => {
   if (isSoftNewlineEvent(e)) {
@@ -113,11 +107,14 @@ const RichEditor = ({ onSubmit, channelID, placeholder }: Props) => {
   };
 
   const onFocus = () => {
-    const editor = editorRef.current;
-    const focused = focusedRef.current;
-    console.log({ editor, focused });
-    if (editor && !focused) {
-      editor.focus();
+    if (!anchorEl) {
+      const editor = editorRef.current;
+      const focused = focusedRef.current;
+      console.log("ONFOCUS", { editor, focused });
+      if (editor && !focused) {
+        focusedRef.current = true;
+        editor.focus();
+      }
     }
   };
 
@@ -131,7 +128,10 @@ const RichEditor = ({ onSubmit, channelID, placeholder }: Props) => {
   const popoverOpen = Boolean(anchorEl);
 
   return (
-    <RichEditorPaper onFocus={onFocus}>
+    <RichEditorPaper
+      onFocus={onFocus}
+      onBlur={() => (focusedRef.current = false)}
+    >
       <RichEditorLayout>
         {matches && (
           <IconButton
@@ -149,8 +149,6 @@ const RichEditor = ({ onSubmit, channelID, placeholder }: Props) => {
             onChange={onChange}
             handleKeyCommand={handleKeyCommand}
             keyBindingFn={myKeyBindingFn}
-            onFocus={() => (focusedRef.current = true)}
-            onBlur={() => (focusedRef.current = false)}
           />
         </RichEditorContainer>
         {matches && (
@@ -196,21 +194,19 @@ const RichEditor = ({ onSubmit, channelID, placeholder }: Props) => {
           horizontal: "right",
         }}
       >
-        {popoverOpen && (
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(8, 1fr)",
-              padding: "1rem",
-              height: "24rem",
-              minWidth: "24rem",
-            }}
-          >
-            <Suspense fallback={EmojiListSkeleton}>
-              <EmojiList onClick={onSelectEmoji} />
-            </Suspense>
-          </div>
-        )}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(8, 1fr)",
+            padding: "1rem",
+            height: "24rem",
+            minWidth: "24rem",
+          }}
+        >
+          <Suspense fallback={<EmojiListSkeleton />}>
+            <EmojiList onClick={onSelectEmoji} />
+          </Suspense>
+        </div>
       </Popover>
     </RichEditorPaper>
   );

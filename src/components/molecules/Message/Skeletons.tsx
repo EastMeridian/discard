@@ -1,6 +1,6 @@
-import AvatarSkeleton from "components/atoms/skeletons/AvatarSkeleton";
-import ImgSkeleton from "components/atoms/skeletons/ImgSkeleton";
-import TextSkeleton from "components/atoms/skeletons/TextSkeleton";
+import AvatarSkeleton from "components/atoms/AvatarSkeleton";
+import ImgSkeleton from "components/atoms/ImgSkeleton";
+import TextSkeleton from "components/atoms/TextSkeleton";
 import { memo } from "react";
 import styled from "styled-components";
 import { MessageContentContainer } from "./ChatMessage";

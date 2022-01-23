@@ -12,7 +12,7 @@ import {
   InsertContainer,
   StyledToggleButton,
   StyledToggleButtonGroup,
-} from "./layouts";
+} from "../layouts";
 import React from "react";
 import SendButton from "./SendButton";
 

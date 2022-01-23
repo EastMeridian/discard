@@ -4,19 +4,50 @@ import ListItemButton from "@mui/material/ListItemButton";
 import CloseIcon from "@mui/icons-material/Close";
 import { User } from "models/user";
 import React, { useState } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "services/firestore";
 import { classifyMembers } from "utils/members";
+import styled from "styled-components";
 
 interface Props {
   members: User[];
   selected?: boolean;
   onClick?: React.MouseEventHandler<HTMLDivElement>;
   onDelete?: () => void;
+  user: User;
 }
 
-const ListItemGroup = ({ members, selected, onClick, onDelete }: Props) => {
-  const [user] = useAuthState(auth);
+const Container = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1;
+  padding: 0 0.5rem;
+  min-width: 0;
+  height: 3rem;
+`;
+
+const TextContainer = styled.div`
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-left: 0.5rem;
+`;
+
+const CloseButton = styled.div`
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 0.5rem;
+`;
+
+const ListItemChannel = ({
+  members,
+  selected,
+  onClick,
+  onDelete,
+  user,
+}: Props) => {
   const [hovered, setHovered] = useState(false);
 
   const classified = classifyMembers(members, user);
@@ -32,17 +63,7 @@ const ListItemGroup = ({ members, selected, onClick, onDelete }: Props) => {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flex: 1,
-          padding: " 0 0.5rem",
-          minWidth: 0,
-          height: "3rem",
-        }}
-      >
+      <Container>
         {members.length < 3 && (
           <Avatar
             src={classified.members[0]?.photoURL || undefined}
@@ -62,26 +83,11 @@ const ListItemGroup = ({ members, selected, onClick, onDelete }: Props) => {
             />
           </Badge>
         )}
-        <div
-          style={{
-            flex: 1,
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            marginLeft: "0.5rem",
-          }}
-        >
+        <TextContainer>
           {classified.others.map(({ displayName }) => displayName).join(", ")}
-        </div>
+        </TextContainer>
         {hovered && (
-          <div
-            style={{
-              height: "100%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              paddingLeft: "0.5rem",
-            }}
+          <CloseButton
             onClick={(e: React.MouseEvent) => {
               e.stopPropagation();
               onDelete?.();
@@ -89,10 +95,10 @@ const ListItemGroup = ({ members, selected, onClick, onDelete }: Props) => {
             onMouseDown={(e: React.MouseEvent) => e.stopPropagation()}
           >
             <CloseIcon fontSize={"small"} />
-          </div>
+          </CloseButton>
         )}
-      </div>
+      </Container>
     </ListItemButton>
   );
 };
-export default ListItemGroup;
+export default ListItemChannel;

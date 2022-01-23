@@ -9,12 +9,12 @@ import Tooltip from "@mui/material/Tooltip";
 import AddIcon from "@mui/icons-material/Add";
 import { Channel } from "models/channel";
 import { User } from "models/user";
-import ChatHeader from "components/organims/ChatScreen/components/ChatHeader";
-import ResponsiveDrawer from "components/molecules/ResponsiveDrawer";
-import ResponsivePopover from "components/molecules/ResponsivePopover";
-import ListItemGroup from "components/organims/ListItemChannel";
+import ChatHeader from "components/organims/ChatView/components/ChatHeader";
+import ResponsiveDrawer from "components/templates/ResponsiveDrawer";
+import ResponsivePopover from "components/templates/ResponsivePopover";
+import ListItemChannel from "components/molecules/ListItemChannel";
 import Header from "components/atoms/Header";
-import ChannelCreationScreen from "components/organims/ChannelCreationScreen";
+import ChannelCreationScreen from "components/organims/ChannelCreationView";
 import { useSelectedChannel } from "hooks/useSelectedChannel";
 import { useHiddenChannel } from "hooks/useHiddenChannel";
 import { useTranslation } from "react-i18next";
@@ -27,8 +27,9 @@ import {
   MenuHeaderContainer,
   ScreenContainer,
 } from "./layouts";
-import ChatScreen from "../../components/organims/ChatScreen";
+import ChatScreen from "../../components/organims/ChatView";
 import ChannelScreenSkeletons from "./components/ChannelScreenSkeletons";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 function SignOut() {
   const { t } = useTranslation();
@@ -40,6 +41,7 @@ function SignOut() {
 }
 
 const ChannelScreen = () => {
+  const [user] = useAuthState(auth);
   const { t } = useTranslation();
   const { hiddenChannels, hideChannel, unhideChannel } = useHiddenChannel();
   const [{ channels, loading }, createChannel] = useChannels(auth, db);
@@ -123,12 +125,13 @@ const ChannelScreen = () => {
               filteredChannels?.map((channel) => {
                 const { id, members } = channel;
                 return (
-                  <ListItemGroup
+                  <ListItemChannel
                     members={members}
                     key={id}
                     selected={selectedChannel?.id === id}
                     onClick={() => handleSelectChannel(channel)}
                     onDelete={() => handleHideChannel(id)}
+                    user={user}
                   />
                 );
               })}
