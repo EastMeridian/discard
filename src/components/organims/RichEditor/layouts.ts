@@ -9,6 +9,7 @@ export const RichEditorPaper = styled(Paper)`
   display: flex;
   flex-direction: column;
   background-color: white;
+  cursor: text;
 `;
 
 export const RichEditorContainer = styled.div`
@@ -39,6 +40,12 @@ export const InsertContainer = styled.div`
   & > *:not(:first-child) {
     margin-left: 0.25rem;
   }
+`;
+
+export const FileContainer = styled.div`
+  display: flex;
+  padding: 0.5rem 0;
+  gap: 0.5rem;
 `;
 
 export const StyledToggleButton = styled(ToggleButton)({

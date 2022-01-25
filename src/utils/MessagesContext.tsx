@@ -116,7 +116,7 @@ const messagesReducer = (state: ReducerState, action: ReducerAction) => {
 
 export const useMessageStore = (selectedChannelID: string) => {
   const { value, dispatch } = useContext(MessagesContext);
-  console.log("useMessageStore", { selectedChannelID, value });
+  /* console.log("useMessageStore", { selectedChannelID, value }); */
 
   const addMessages = (channelID: string, messages: Message[]) => {
     dispatch({ type: "ADD_MESSAGES", value: { channelID, messages } });

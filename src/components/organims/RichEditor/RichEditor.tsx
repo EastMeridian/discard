@@ -19,6 +19,7 @@ import {
 } from "react";
 import "draft-js/dist/Draft.css";
 import {
+  FileContainer,
   RichEditorContainer,
   RichEditorLayout,
   RichEditorPaper,
@@ -27,7 +28,11 @@ import RichEditorActionBar from "./components/RichEditorActionBar";
 import { Divider, Popover, useMediaQuery } from "@mui/material";
 import SendButton from "./components/SendButton";
 import { EditorUtils } from "./EditorUtils";
-import EmojiListSkeleton from "../EmojiList/EmojiListSkeleton";
+import EmojiListSkeleton from "../../molecules/EmojiList/EmojiListSkeleton";
+import { UploadImage } from "./components/UploadImage";
+import { useFileUpload } from "hooks/useFileUpload";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "services/firestore";
 
 const EmojiList = lazy(() => import("components/molecules/EmojiList"));
 
@@ -45,13 +50,13 @@ const myKeyBindingFn = (e: KeyboardEvent): string | null => {
 };
 
 interface Props {
-  onSubmit: (raw: RawDraftContentState) => void;
+  onSubmit: (raw: RawDraftContentState, files: string[]) => void;
   channelID?: string;
   placeholder: string;
 }
 
 const RichEditor = ({ onSubmit, channelID, placeholder }: Props) => {
-  console.log("RENDER", channelID);
+  const [user] = useAuthState(auth);
   const editorRef = useRef<Editor>(null);
   const matches = useMediaQuery("(max-width:320px)");
   const [displayActions, setDisplayActions] = useState(!matches);
@@ -60,13 +65,9 @@ const RichEditor = ({ onSubmit, channelID, placeholder }: Props) => {
   const [editorState, setEditorState] = useState(() =>
     EditorState.createEmpty()
   );
+  const { selectedFiles, uploadFiles } = useFileUpload(user.uid);
 
   useEffect(() => {
-    console.log(
-      "FLUSH EDITOR before",
-      editorState,
-      editorState.getCurrentContent().hasText()
-    );
     flushEditorState();
     setTimeout(() => onFocus(), 100);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -77,7 +78,6 @@ const RichEditor = ({ onSubmit, channelID, placeholder }: Props) => {
   }, [matches]);
 
   const onChange = (value: EditorState) => {
-    console.log("ONCHANGE", convertToRaw(value.getCurrentContent()));
     setEditorState(value);
   };
 
@@ -87,12 +87,11 @@ const RichEditor = ({ onSubmit, channelID, placeholder }: Props) => {
 
   const onSubmitContent = (editorState: EditorState) => {
     const raw = convertToRaw(editorState.getCurrentContent());
-    onSubmit(raw);
+    onSubmit(raw, []);
     flushEditorState();
   };
 
   const handleKeyCommand = (command: string, editorState: EditorState) => {
-    console.log({ command });
     if (command === "submit-content") {
       onSubmitContent(editorState);
       return "handled";
@@ -110,7 +109,6 @@ const RichEditor = ({ onSubmit, channelID, placeholder }: Props) => {
     if (!anchorEl) {
       const editor = editorRef.current;
       const focused = focusedRef.current;
-      console.log("ONFOCUS", { editor, focused });
       if (editor && !focused) {
         focusedRef.current = true;
         editor.focus();
@@ -158,6 +156,13 @@ const RichEditor = ({ onSubmit, channelID, placeholder }: Props) => {
           />
         )}
       </RichEditorLayout>
+      {selectedFiles.length > 0 && (
+        <FileContainer>
+          {selectedFiles.map(({ localURL }) => (
+            <UploadImage src={localURL} key={localURL} onDelete={() => {}} />
+          ))}
+        </FileContainer>
+      )}
       {displayActions && (
         <>
           <Divider style={{ margin: "0.25rem 0" }} />
@@ -170,7 +175,7 @@ const RichEditor = ({ onSubmit, channelID, placeholder }: Props) => {
             onFormatBlock={(format) =>
               setEditorState(RichUtils.toggleBlockType(editorState, format))
             }
-            onClickAttachFile={() => {}}
+            onClickAttachFile={uploadFiles}
             onClickEmoji={(event: React.MouseEvent<HTMLButtonElement>) => {
               setAnchorEl(event.currentTarget);
             }}

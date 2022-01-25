@@ -13,15 +13,20 @@ import {
   StyledToggleButton,
   StyledToggleButtonGroup,
 } from "../layouts";
-import React from "react";
+import React, { useRef } from "react";
 import SendButton from "./SendButton";
+import { styled } from "@mui/system";
+
+const Input = styled("input")({
+  display: "none",
+});
 
 export interface RichEditorActionBarProps {
   styleFormats?: Record<string, string>;
   currentBlockType?: string;
   onFormatStyle?: (nextFormat: string) => void;
   onFormatBlock?: (nextBlock: string) => void;
-  onClickAttachFile?: () => void;
+  onClickAttachFile?: (files: FileList) => void;
   onClickEmoji?: React.MouseEventHandler<HTMLButtonElement>;
   onClickSubmit?: () => void;
   submitDisabled?: boolean;
@@ -39,6 +44,12 @@ const RichEditorActionBar = ({
   submitDisabled,
   shouldDisplaySubmit = true,
 }: RichEditorActionBarProps) => {
+  const inputFile = useRef<HTMLInputElement>(null);
+
+  const handleAttachFile = () => {
+    inputFile.current?.click();
+  };
+
   return (
     <ActionsContainer>
       <FormatContainer>
@@ -80,9 +91,19 @@ const RichEditorActionBar = ({
         </StyledToggleButtonGroup>
       </FormatContainer>
       <InsertContainer>
-        <IconButton onClick={onClickAttachFile} size="small">
+        <Input
+          ref={inputFile}
+          accept="image/*"
+          multiple
+          type="file"
+          onChange={(e) =>
+            e.target.files && onClickAttachFile?.(e.target.files)
+          }
+        />
+        <IconButton onClick={handleAttachFile} size="small">
           <AttachFileIcon />
         </IconButton>
+
         <IconButton
           onClick={onClickEmoji}
           size="small"

@@ -1,8 +1,6 @@
 import emojis from "constants/emojis";
 import EmojiButton from "components/atoms/EmojiButton";
 
-console.log("EmojiListFile loaded");
-
 export interface EmojiListProps {
   onClick?: (emoji: string) => void;
 }

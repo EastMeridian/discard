@@ -1,4 +1,4 @@
-import { convertToRaw, EditorState, Modifier, RichUtils } from "draft-js";
+import { EditorState, Modifier, RichUtils } from "draft-js";
 
 export class EditorUtils {
   static maybePlaceholder = (editorState: EditorState, placeholder: string) => {
@@ -30,34 +30,24 @@ export class EditorUtils {
 
   static getResetEditorState = (editorState: EditorState) => {
     const blocks = editorState.getCurrentContent().getBlockMap().toList();
-    console.log({ blocks });
     const updatedSelection = editorState.getSelection().merge({
       anchorKey: blocks.first().get("key"),
       anchorOffset: 0,
       focusKey: blocks.last().get("key"),
       focusOffset: blocks.last().getLength(),
     });
-    console.log({ updatedSelection });
 
     const newContentState = Modifier.removeRange(
       editorState.getCurrentContent(),
       updatedSelection,
       "forward"
     );
-    console.log({ newContentState });
 
     const newState = EditorState.push(
       editorState,
       newContentState,
       "remove-range"
     );
-
-    console.log({
-      newState,
-      hasText: newState.getCurrentContent().hasText(),
-      oldraw: convertToRaw(editorState.getCurrentContent()),
-      nextraw: convertToRaw(newState.getCurrentContent()),
-    });
 
     return newState; /* this.removeSelectedBlocksStyle(newState); */
   };

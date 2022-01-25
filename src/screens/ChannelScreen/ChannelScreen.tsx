@@ -74,7 +74,6 @@ const ChannelScreen = () => {
   };
 
   const handleHideChannel = (id: string) => {
-    console.log("handleHideChannel");
     hideChannel(id);
     setSelectedChannel();
   };

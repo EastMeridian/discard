@@ -9,7 +9,7 @@ import { Message } from "models/message";
 import { MessageSkeletons } from "components/molecules/Message";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useInView } from "react-intersection-observer";
-import RichEditor from "components/molecules/RichEditor";
+import RichEditor from "components/organims/RichEditor";
 import { ScreenContainer } from "./layouts";
 import { useTranslation } from "react-i18next";
 
@@ -59,7 +59,6 @@ const ChatScreen = ({ channel }: Props) => {
   useEffect(() => {
     if (topCursorInView && !loading) {
       firstElementRef.current = getFirstMessageElement();
-      console.log("getFirstMessageElement", getFirstMessageElement());
       requestNextChunk();
     }
   }, [topCursorInView, requestNextChunk, loading]);
@@ -84,7 +83,7 @@ const ChatScreen = ({ channel }: Props) => {
       </ScrollView>
       <div style={{ padding: "0 0.5rem 1rem 0.5rem" }}>
         <RichEditor
-          onSubmit={(message) => sendMessage(message)}
+          onSubmit={sendMessage}
           channelID={channel.id}
           placeholder={t("editor.placeholder")}
         />

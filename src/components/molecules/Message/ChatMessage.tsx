@@ -1,8 +1,8 @@
 import { Avatar, Typography } from "@mui/material";
-import { Editor, convertFromRaw, EditorState } from "draft-js";
-import { noop } from "lodash";
-import { Message } from "models/message";
+import { Message, MessageType } from "models/message";
 import styled from "styled-components";
+import FileContent from "./components/FileContent";
+import TextContent from "./components/TextContent";
 
 export interface MessageProps {
   message: Message;
@@ -24,20 +24,28 @@ export const MessageContentContainer = styled.div`
   margin: 0 1rem;
 `;
 
-const ChatMessage = ({ message, style }: MessageProps) => {
-  const { text, photoURL, displayName } = message;
+const getMessageContent = (
+  type: MessageType
+): ((props: { message: Message } & any) => JSX.Element) => {
+  switch (type) {
+    case "text":
+      return TextContent;
+    case "file":
+      return FileContent;
+  }
+};
 
-  const contentState = convertFromRaw(text);
-  const editorState = EditorState.createWithContent(contentState);
+const ChatMessage = ({ message, style }: MessageProps) => {
+  const { photoURL, displayName, type } = message;
+
+  const Component = getMessageContent(type);
 
   return (
     <Container style={style}>
       <Avatar src={photoURL || undefined} alt={displayName || "user"} />
       <MessageContentContainer>
         <Typography>{displayName}</Typography>
-        <div>
-          <Editor editorState={editorState} readOnly={true} onChange={noop} />
-        </div>
+        <Component message={message} />
       </MessageContentContainer>
     </Container>
   );

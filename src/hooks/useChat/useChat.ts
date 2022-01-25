@@ -22,8 +22,10 @@ import { dispatchMessageSnapshot } from "./utils";
 import { createNextMessagesQuery } from "utils/createNextMessageQuery";
 import { Message } from "models/message";
 import { RawDraftContentState } from "draft-js";
+import { ref } from "firebase/storage";
+import { storage } from "services/firestore";
 
-type ChatAction = (text: RawDraftContentState) => void;
+type ChatAction = (text: RawDraftContentState, files: string[]) => void;
 
 type ChatValue = {
   messages: DocumentData | undefined;
@@ -77,11 +79,10 @@ export const useChat = ({
   useSnapshotManager(
     { channelID, query: messageQuery },
     (snapshot: QuerySnapshot<DocumentData>) => {
-      const lastVisible = snapshot.docs[snapshot.docs.length - 1];
-      console.log({ lastVisible }, snapshot, snapshot.docs.length);
+      /*       const lastVisible = snapshot.docs[snapshot.docs.length - 1];
+      console.log({ lastVisible }, snapshot, snapshot.docs.length); */
 
-      const { added, modified } = dispatchMessageSnapshot(snapshot);
-      console.log("length", channelID, added.length, modified.length);
+      const { added } = dispatchMessageSnapshot(snapshot);
       addMessages(channelID, added);
     }
   );
@@ -98,16 +99,26 @@ export const useChat = ({
           return { id, ...doc.data() } as Message;
         });
         addNextMessages(channelID, nextMessages);
-        console.log({ nextMessages });
       }, nextChunkDelay);
     }
   };
 
-  const sendMessage = async (text: RawDraftContentState) => {
+  const sendMessage = async (text: RawDraftContentState, files: string[]) => {
     if (currentUser) {
       try {
         const { uid, photoURL, displayName } = currentUser;
-        await createMessage({ uid, text, photoURL, channelID, displayName });
+        await createMessage({
+          uid,
+          text,
+          photoURL,
+          channelID,
+          displayName,
+          type: "text",
+        });
+        if (files.length > 0) {
+          const refs = files.map((file) => ref(storage));
+          console.log(refs);
+        }
         onMessageSent?.();
       } catch (e: any) {
         setError(e.message);
