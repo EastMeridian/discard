@@ -11,8 +11,8 @@ export interface Message {
   photoURL: string | null;
   displayName: string | null;
   type: MessageType;
-  text?: RawDraftContentState;
-  files?: string[];
+  text?: RawDraftContentState | null;
+  files?: string[] | null;
 }
 export interface TextMessage extends Message {
   type: "text";

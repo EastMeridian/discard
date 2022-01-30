@@ -99,6 +99,10 @@ const RichEditorActionBar = ({
           onChange={(e) =>
             e.target.files && onClickAttachFile?.(e.target.files)
           }
+          onClick={(e) => {
+            const element = e.currentTarget as any;
+            element.value = null;
+          }}
         />
         <IconButton onClick={handleAttachFile} size="small">
           <AttachFileIcon />

@@ -9,7 +9,7 @@ import { Message } from "models/message";
 import { MessageSkeletons } from "components/molecules/Message";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useInView } from "react-intersection-observer";
-import RichEditor from "components/organims/RichEditor";
+import RichEditor from "components/molecules/RichEditor";
 import { ScreenContainer } from "./layouts";
 import { useTranslation } from "react-i18next";
 

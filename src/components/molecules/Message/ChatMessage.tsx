@@ -21,6 +21,7 @@ const Container = styled.div`
 export const MessageContentContainer = styled.div`
   display: flex;
   flex-direction: column;
+  flex: 1rem;
   margin: 0 1rem;
 `;
 
@@ -39,7 +40,7 @@ const ChatMessage = ({ message, style }: MessageProps) => {
   const { photoURL, displayName, type } = message;
 
   const Component = getMessageContent(type);
-
+  console.log({ type });
   return (
     <Container style={style}>
       <Avatar src={photoURL || undefined} alt={displayName || "user"} />

@@ -22,10 +22,13 @@ import { dispatchMessageSnapshot } from "./utils";
 import { createNextMessagesQuery } from "utils/createNextMessageQuery";
 import { Message } from "models/message";
 import { RawDraftContentState } from "draft-js";
-import { ref } from "firebase/storage";
-import { storage } from "services/firestore";
+import { FileUpload } from "models/file";
+import { uploadManyFiles } from "services/api/upload";
 
-type ChatAction = (text: RawDraftContentState, files: string[]) => void;
+type ChatAction = (
+  text: RawDraftContentState | null,
+  files: FileUpload[]
+) => void;
 
 type ChatValue = {
   messages: DocumentData | undefined;
@@ -103,21 +106,41 @@ export const useChat = ({
     }
   };
 
-  const sendMessage = async (text: RawDraftContentState, files: string[]) => {
+  const sendMessage = async (
+    text: RawDraftContentState | null,
+    files: FileUpload[]
+  ) => {
     if (currentUser) {
       try {
         const { uid, photoURL, displayName } = currentUser;
-        await createMessage({
-          uid,
-          text,
-          photoURL,
-          channelID,
-          displayName,
-          type: "text",
-        });
+        console.log({ text });
+        if (text) {
+          createMessage({
+            uid,
+            text,
+            photoURL,
+            channelID,
+            displayName,
+            type: "text",
+          });
+        }
+
         if (files.length > 0) {
-          const refs = files.map((file) => ref(storage));
-          console.log(refs);
+          console.log(
+            "[upload] uploading",
+            files.map(({ name }) => name)
+          );
+          uploadManyFiles(files).then((snapshots) => {
+            console.log("Uploaded images!", snapshots);
+            createMessage({
+              uid,
+              photoURL,
+              channelID,
+              displayName,
+              type: "file",
+              files: snapshots.map((snapshot) => snapshot.metadata.fullPath),
+            });
+          });
         }
         onMessageSent?.();
       } catch (e: any) {
