@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import { styled } from "@mui/material";
 
 const EmojiButton = styled("div")(({ theme }) => ({
   fontSize: "2rem",

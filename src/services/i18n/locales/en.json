@@ -16,6 +16,7 @@
       "select": "Select one user",
       "create": "Create Channel"
     },
-    "messages": "Messages"
+    "messages": "Messages",
+    "uploadFile": "Upload in Discard"
   }
 }

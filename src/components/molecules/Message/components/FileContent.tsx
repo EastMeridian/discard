@@ -10,26 +10,26 @@ export interface FileContentProps {
 
 const FilesContainer = styled.div`
   display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
   padding: 1rem 0;
+  min-height: 9rem;
 `;
 
-const FileContainer = styled("div")(({ theme }) => ({
-  borderRadius: "0.5rem",
-  height: "16rem",
-  flex: 0.33,
+const FileThumbnail = styled("img")(({ theme }) => ({
+  borderRadius: "0.25rem",
+  cursor: "zoom-in",
+  objectFit: "cover",
+  [theme.breakpoints.down("md")]: {
+    width: "9rem",
+    height: "7rem",
+  },
+  [theme.breakpoints.up("md")]: {
+    width: "16rem",
+    height: "9rem",
+  },
   backgroundColor: theme.colors.surface.main,
-  display: "flex",
-  alignItems: "center",
-  overflow: "hidden",
 }));
-
-const FileThumbnail = styled.img`
-  width: 100%;
-  height: 100%;
-  cursor: zoom-in;
-  object-fit: cover;
-`;
 
 const FileContent = ({ message }: FileContentProps) => {
   const [sources, setSources] = useState<string[]>([]);
@@ -48,9 +48,7 @@ const FileContent = ({ message }: FileContentProps) => {
   return (
     <FilesContainer>
       {sources.map((src) => (
-        <FileContainer>
-          <FileThumbnail alt={src} src={src} key={src} />
-        </FileContainer>
+        <FileThumbnail alt={src} src={src} key={src} />
       ))}
     </FilesContainer>
   );

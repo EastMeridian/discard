@@ -17,7 +17,7 @@ import {
 import { User } from "firebase/auth";
 
 import { useMemo, useState } from "react";
-import { useMessageStore } from "utils/MessagesContext";
+import { useMessageStore } from "contexts/MessagesContext";
 import { dispatchMessageSnapshot } from "./utils";
 import { createNextMessagesQuery } from "utils/createNextMessageQuery";
 import { Message } from "models/message";

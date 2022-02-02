@@ -19,6 +19,7 @@ import {
 } from "react";
 import "draft-js/dist/Draft.css";
 import {
+  EmojiListContainer,
   FileContainer,
   RichEditorContainer,
   RichEditorLayout,
@@ -28,10 +29,10 @@ import RichEditorActionBar from "./components/RichEditorActionBar";
 import { Divider, Popover, useMediaQuery } from "@mui/material";
 import SendButton from "./components/SendButton";
 import { EditorUtils } from "./EditorUtils";
-import EmojiListSkeleton from "../EmojiList/EmojiListSkeleton";
+import EmojiListSkeleton from "../../molecules/EmojiList/EmojiListSkeleton";
 import { UploadImage } from "./components/UploadImage";
-import { useFileSelector } from "hooks/useFileSelector";
 import { FileUpload } from "models/file";
+import { useFileSelector } from "contexts/FileSelectorContext";
 
 const EmojiList = lazy(() => import("components/molecules/EmojiList"));
 
@@ -200,19 +201,11 @@ const RichEditor = ({ onSubmit, channelID, placeholder }: Props) => {
           horizontal: "right",
         }}
       >
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(8, 1fr)",
-            padding: "1rem",
-            height: "24rem",
-            minWidth: "24rem",
-          }}
-        >
+        <EmojiListContainer>
           <Suspense fallback={<EmojiListSkeleton />}>
             <EmojiList onClick={onSelectEmoji} />
           </Suspense>
-        </div>
+        </EmojiListContainer>
       </Popover>
     </RichEditorPaper>
   );

@@ -1,11 +1,12 @@
 import "services/firestore";
 import "services/i18n";
 import RootSwitch from "navigation/RootSwitch";
-import MessagesContextProvider from "utils/MessagesContext";
+import MessagesContextProvider from "contexts/MessagesContext";
 import { useEffect } from "react";
 import { useHistory } from "react-router";
 import { logEvent, setCurrentScreen } from "firebase/analytics";
 import { analytics } from "services/firestore";
+import { FileSelectorContextProvider } from "contexts/FileSelectorContext";
 
 function App() {
   const { listen } = useHistory();
@@ -19,9 +20,11 @@ function App() {
   });
 
   return (
-    <MessagesContextProvider>
-      <RootSwitch />
-    </MessagesContextProvider>
+    <FileSelectorContextProvider>
+      <MessagesContextProvider>
+        <RootSwitch />
+      </MessagesContextProvider>
+    </FileSelectorContextProvider>
   );
 }
 

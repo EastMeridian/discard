@@ -57,3 +57,11 @@ export const StyledToggleButtonGroup = styled(ToggleButtonGroup)({
     border: 0,
   },
 });
+
+export const EmojiListContainer = styled.div`
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  padding: 1rem;
+  height: 24rem;
+  min-width: 24rem;
+`;

@@ -9,9 +9,9 @@ import { Message } from "models/message";
 import { MessageSkeletons } from "components/molecules/Message";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useInView } from "react-intersection-observer";
-import RichEditor from "components/molecules/RichEditor";
-import { ScreenContainer } from "./layouts";
+import RichEditor from "components/organims/RichEditor";
 import { useTranslation } from "react-i18next";
+import { ScreenContainer } from "./components/ScreenContainer";
 
 interface Props {
   channel: Channel;
@@ -19,6 +19,7 @@ interface Props {
 
 const ChatScreen = ({ channel }: Props) => {
   const { t } = useTranslation();
+
   const [user] = useAuthState(auth);
   const bottomCursor = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
