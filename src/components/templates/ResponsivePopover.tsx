@@ -4,7 +4,7 @@ import Popover, { PopoverProps } from "@mui/material/Popover";
 export interface ResponsivePopoverProps
   extends Pick<
     PopoverProps,
-    "id" | "open" | "anchorEl" | "children" | "anchorOrigin"
+    "id" | "open" | "anchorEl" | "children" | "anchorOrigin" | "transformOrigin"
   > {
   onClose: () => void;
   onOpen: React.ReactEventHandler;
@@ -18,6 +18,7 @@ const ResponsivePopover = ({
   onOpen,
   children,
   anchorOrigin,
+  transformOrigin,
 }: ResponsivePopoverProps) => (
   <>
     <Popover
@@ -26,6 +27,7 @@ const ResponsivePopover = ({
       anchorEl={anchorEl}
       onClose={onClose}
       anchorOrigin={anchorOrigin}
+      transformOrigin={transformOrigin}
       sx={{
         display: { xs: "none", sm: "flex" },
       }}
