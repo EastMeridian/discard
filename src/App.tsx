@@ -7,7 +7,6 @@ import { useHistory } from "react-router";
 import { logEvent, setCurrentScreen } from "firebase/analytics";
 import { analytics } from "services/firestore";
 import { FileSelectorProvider } from "contexts/FileSelectorContext";
-import { Box, LinearProgress } from "@mui/material";
 import { SnackbarProvider } from "contexts/SnackbarContext";
 
 function App() {
