@@ -1,5 +1,6 @@
 import { Dialog } from "@mui/material";
 import { FileMessage } from "models/message";
+import styled from "styled-components";
 
 export interface FileContentDialogProps {
   open: boolean;
@@ -7,6 +8,12 @@ export interface FileContentDialogProps {
   message: FileMessage;
   onClose?: () => void;
 }
+
+const PopoverImage = styled.img`
+  object-fit: contain;
+  max-width: 100vw;
+  max-height: 100vh;
+`;
 
 const FileContentPopover = ({
   onClose,
@@ -20,11 +27,7 @@ const FileContentPopover = ({
 
   return (
     <Dialog onClose={handleClose} open={open}>
-      <img
-        src={message.files[initialIndex]}
-        alt="fullscreen"
-        style={{ objectFit: "contain", maxHeight: "90vh", maxWidth: "90vw" }}
-      />
+      <PopoverImage src={message.files[initialIndex]} alt="fullscreen" />
     </Dialog>
   );
 };
