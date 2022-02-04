@@ -1,7 +1,6 @@
-import { getDownloadURL, ref } from "firebase/storage";
+import FileContentPopover from "components/templates/FileContentPopover";
 import { FileMessage } from "models/message";
-import { useEffect, useState } from "react";
-import { storage } from "services/firestore";
+import { useState } from "react";
 import styled from "styled-components";
 
 export interface FileContentProps {
@@ -13,7 +12,6 @@ const FilesContainer = styled.div`
   flex-wrap: wrap;
   gap: 0.5rem;
   padding: 1rem 0;
-  min-height: 9rem;
 `;
 
 const FileThumbnail = styled("img")(({ theme }) => ({
@@ -21,37 +19,43 @@ const FileThumbnail = styled("img")(({ theme }) => ({
   cursor: "zoom-in",
   objectFit: "cover",
   [theme.breakpoints.down("md")]: {
-    width: "9rem",
-    height: "7rem",
+    maxWidth: "12rem",
+    height: "6.75rem",
   },
   [theme.breakpoints.up("md")]: {
-    width: "16rem",
+    maxWidth: "16rem",
     height: "9rem",
   },
   backgroundColor: theme.colors.surface.main,
 }));
 
 const FileContent = ({ message }: FileContentProps) => {
-  const [sources, setSources] = useState<string[]>([]);
-
-  useEffect(() => {
-    (async () => {
-      const { files } = message;
-      const nextSources = await Promise.all(
-        files.map((file) => getDownloadURL(ref(storage, file)))
-      );
-      console.log({ nextSources });
-      setSources(nextSources);
-    })();
-  }, [message]);
+  const [open, setOpen] = useState(false);
+  const [index, setIndex] = useState(0);
 
   return (
-    <FilesContainer>
-      {sources.map((src) => (
-        <FileThumbnail alt={src} src={src} key={src} />
-      ))}
-    </FilesContainer>
+    <>
+      <FilesContainer>
+        {message.files.map((src, index) => (
+          <FileThumbnail
+            alt={src}
+            src={src}
+            key={src}
+            onClick={() => {
+              setIndex(index);
+              setOpen(true);
+            }}
+          />
+        ))}
+      </FilesContainer>
+
+      <FileContentPopover
+        open={open}
+        message={message}
+        initialIndex={index}
+        onClose={() => setOpen(false)}
+      />
+    </>
   );
 };
-
 export default FileContent;

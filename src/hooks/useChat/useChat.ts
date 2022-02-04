@@ -24,6 +24,9 @@ import { Message } from "models/message";
 import { RawDraftContentState } from "draft-js";
 import { FileUpload } from "models/file";
 import { uploadManyFiles } from "services/api/upload";
+import { getDownloadURL, ref } from "firebase/storage";
+import { storage } from "services/firestore";
+import { useSnackbar } from "contexts/SnackbarContext";
 
 type ChatAction = (
   text: RawDraftContentState | null,
@@ -57,6 +60,7 @@ export const useChat = ({
   sendMessage: ChatAction;
   requestNextChunk: () => void;
 } => {
+  const { setLoading: setSnackbarLoading } = useSnackbar();
   const {
     messages,
     lastMessageTime,
@@ -126,20 +130,26 @@ export const useChat = ({
         }
 
         if (files.length > 0) {
+          setSnackbarLoading(true);
           console.log(
             "[upload] uploading",
             files.map(({ name }) => name)
           );
-          uploadManyFiles(files).then((snapshots) => {
-            console.log("Uploaded images!", snapshots);
-            createMessage({
-              uid,
-              photoURL,
-              channelID,
-              displayName,
-              type: "file",
-              files: snapshots.map((snapshot) => snapshot.metadata.fullPath),
-            });
+
+          const snapshots = await uploadManyFiles(files);
+          const messageFiles = await Promise.all(
+            snapshots.map((snapshot) =>
+              getDownloadURL(ref(storage, snapshot.metadata.fullPath))
+            )
+          );
+          setSnackbarLoading(false);
+          createMessage({
+            uid,
+            photoURL,
+            channelID,
+            displayName,
+            type: "file",
+            files: messageFiles,
           });
         }
         onMessageSent?.();

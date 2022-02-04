@@ -8,14 +8,14 @@ const Container = styled("div")(({ theme }) => ({
   left: 0, */
   width: "100%",
   height: "100%",
-  backgroundColor: theme.colors.surface.main + "e0",
+  backgroundColor: theme.colors.surface.main + "e9",
   color: theme.colors.surface.active,
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
   gap: "1rem",
   zIndex: 10,
-  fontSize: 48,
+  fontSize: 64,
   flexDirection: "column",
 }));
 

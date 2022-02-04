@@ -1,28 +1,23 @@
 import { FileUpload } from "models/file";
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useMemo,
-  useState,
-} from "react";
+import { useCallback, useMemo, useState } from "react";
+import { createGenericContext } from "utils/createGenericContext";
 import { extractFileFromURL } from "utils/url";
 
-const FileSelectorContext = createContext<
-  | {
-      selectedFiles: FileUpload[];
-      removeFile: (file: string) => void;
-      addFiles: (nextFiles: FileList | File[]) => void;
-      resetSelectedFiles: () => void;
-    }
-  | undefined
->(undefined);
+interface FileSelectorContext {
+  selectedFiles: FileUpload[];
+  removeFile: (file: string) => void;
+  addFiles: (nextFiles: FileList | File[]) => void;
+  resetSelectedFiles: () => void;
+}
+
+const [useFileSelector, FileSelectorContextProvider] =
+  createGenericContext<FileSelectorContext>();
 
 interface FileSelectorContextProviderProps {
   children: React.ReactNode;
 }
 
-export const FileSelectorContextProvider = ({
+const FileSelectorProvider = ({
   children,
 }: FileSelectorContextProviderProps) => {
   const [selectedFiles, setSelectedFiles] = useState<FileUpload[]>([]);
@@ -58,18 +53,10 @@ export const FileSelectorContextProvider = ({
   );
 
   return (
-    <FileSelectorContext.Provider value={value}>
+    <FileSelectorContextProvider value={value}>
       {children}
-    </FileSelectorContext.Provider>
+    </FileSelectorContextProvider>
   );
 };
 
-export const useFileSelector = () => {
-  const contextIsDefined = useContext(FileSelectorContext);
-
-  if (!contextIsDefined) {
-    throw new Error("useGenericContext must be used within a Provider");
-  }
-
-  return contextIsDefined;
-};
+export { useFileSelector, FileSelectorProvider };

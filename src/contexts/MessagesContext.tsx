@@ -1,5 +1,6 @@
 import { Message } from "models/message";
-import React, { createContext, Dispatch, useContext, useReducer } from "react";
+import React, { Dispatch, useReducer } from "react";
+import { createGenericContext } from "utils/createGenericContext";
 
 const START_DATE = new Date(0);
 
@@ -43,13 +44,10 @@ type ReducerAction =
   | SetTopReachedAction
   | SetLoadingAction;
 
-const MessagesContext = createContext<{
+interface MessagesContext {
   value: ReducerState;
   dispatch: Dispatch<ReducerAction>;
-}>({
-  value: messagesInitialeState,
-  dispatch: () => {},
-});
+}
 
 const getLastMessageTime = (messages: Message[], currentTime?: Date) => {
   if (messages.length === 0) return currentTime;
@@ -114,8 +112,11 @@ const messagesReducer = (state: ReducerState, action: ReducerAction) => {
   }
 };
 
+const [useMessageContext, MessagesContextProvider] =
+  createGenericContext<MessagesContext>();
+
 export const useMessageStore = (selectedChannelID: string) => {
-  const { value, dispatch } = useContext(MessagesContext);
+  const { value, dispatch } = useMessageContext();
   /* console.log("useMessageStore", { selectedChannelID, value }); */
 
   const addMessages = (channelID: string, messages: Message[]) => {
@@ -154,14 +155,15 @@ export const useMessageStore = (selectedChannelID: string) => {
 interface MessageContextProviderProps {
   children: React.ReactNode;
 }
-const MessagesContextProvider = ({ children }: MessageContextProviderProps) => {
+
+const MessagesProvider = ({ children }: MessageContextProviderProps) => {
   const [value, dispatch] = useReducer(messagesReducer, messagesInitialeState);
 
   return (
-    <MessagesContext.Provider value={{ value, dispatch }}>
+    <MessagesContextProvider value={{ value, dispatch }}>
       {children}
-    </MessagesContext.Provider>
+    </MessagesContextProvider>
   );
 };
 
-export default MessagesContextProvider;
+export default MessagesProvider;
