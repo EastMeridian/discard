@@ -1,23 +1,25 @@
 import { Channel } from "models/channel";
 import { useCallback, useEffect, useState } from "react";
-import { useHistory, useParams } from "react-router";
+import { useNavigate, useParams } from "react-router-dom";
 
 export const useSelectedChannel = (
   channels?: Channel[]
 ): [Channel | undefined, (channel?: Channel) => void] => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const { channelID } = useParams<{ channelID: string }>();
   const [selectedChannel, setSelectedChannel] = useState<Channel | undefined>();
+
+  console.log(channelID);
 
   const handleSelectChannel = useCallback(
     (channel?: Channel) => {
       const nextChannel = channel ?? channels?.[0];
       if (nextChannel) {
         setSelectedChannel(nextChannel);
-        history.push(`/channels/${nextChannel.id}`);
+        navigate(`/channels/${nextChannel.id}`);
       }
     },
-    [history, channels]
+    [navigate, channels]
   );
 
   useEffect(() => {
@@ -28,7 +30,7 @@ export const useSelectedChannel = (
       const nextChannel = found ?? channels[0];
       handleSelectChannel(nextChannel);
     }
-  }, [selectedChannel, channels, history, channelID, handleSelectChannel]);
+  }, [selectedChannel, channels, channelID, handleSelectChannel]);
 
   return [selectedChannel, handleSelectChannel];
 };

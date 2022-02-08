@@ -13,6 +13,7 @@ import { useCollectionSubscription } from "./useCollectionSubscription";
 import { useState } from "react";
 import { User } from "models/user";
 import { debounce } from "lodash";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 type GroupAction = (members?: User[]) => Promise<string | undefined>;
 
@@ -32,11 +33,12 @@ export const useChannels = (
   auth: Auth,
   db: Firestore
 ): [GroupValue, GroupAction] => {
+  const [user] = useAuthState(auth);
   const [creationError, setCreationError] = useState(null);
   const groupsRef = collection(db, "channels");
   const groupsQuery = query(
     groupsRef,
-    where("memberUIDs", "array-contains", auth.currentUser?.uid)
+    where("memberUIDs", "array-contains", user?.uid)
   );
 
   const [loading, channels, error] =

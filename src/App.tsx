@@ -1,20 +1,21 @@
 import "services/firestore";
 import "services/i18n";
-import RootSwitch from "navigation/RootSwitch";
+import RootRoutes from "navigation/RootRoutes";
 import MessagesContextProvider from "contexts/MessagesContext";
 import { useEffect } from "react";
-import { useHistory } from "react-router";
+import { createBrowserHistory } from "history";
 import { logEvent, setCurrentScreen } from "firebase/analytics";
 import { analytics } from "services/firestore";
 import { FileSelectorProvider } from "contexts/FileSelectorContext";
 import { SnackbarProvider } from "contexts/SnackbarContext";
 
 function App() {
-  const { listen } = useHistory();
+  const { listen } = createBrowserHistory();
   useEffect(() => {
-    const unlisten = listen(({ pathname }) => {
-      setCurrentScreen(analytics, pathname);
-      logEvent(analytics, "page_view", { pathname });
+    const unlisten = listen(({ location }) => {
+      console.log(location);
+      setCurrentScreen(analytics, location.pathname);
+      logEvent(analytics, "page_view", { location: location.pathname });
     });
 
     return () => unlisten();
@@ -24,7 +25,7 @@ function App() {
     <FileSelectorProvider>
       <MessagesContextProvider>
         <SnackbarProvider>
-          <RootSwitch />
+          <RootRoutes />
         </SnackbarProvider>
       </MessagesContextProvider>
     </FileSelectorProvider>

@@ -19,12 +19,19 @@ import { useState } from "react";
 import ResponsivePopover from "components/templates/ResponsivePopover";
 import ThemeModeSwitch from "components/atoms/ThemeModeSwitch";
 import { useThemeMode } from "contexts/ThemeContext";
+import { useNavigate } from "react-router-dom";
 
 function SignOut() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   return (
     auth.currentUser && (
-      <ListItemButton onClick={() => auth.signOut()}>
+      <ListItemButton
+        onClick={() => {
+          navigate("/login");
+          auth.signOut();
+        }}
+      >
         <ListItemIcon>
           <LogoutIcon />
         </ListItemIcon>

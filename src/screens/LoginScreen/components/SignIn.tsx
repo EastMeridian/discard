@@ -5,16 +5,10 @@ import {
   FacebookAuthProvider,
   UserCredential,
 } from "firebase/auth";
-import { useHistory, useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { createUser } from "services/api/users";
 import { auth } from "services/firestore";
 import { useTranslation } from "react-i18next";
-
-interface LocationState {
-  from: {
-    pathname: string;
-  };
-}
 
 const onSignInSucceed = async ({ user }: UserCredential) => {
   const { uid, displayName, photoURL, email } = user;
@@ -24,10 +18,14 @@ const onSignInSucceed = async ({ user }: UserCredential) => {
 
 const SignIn = () => {
   const { t } = useTranslation();
-  const history = useHistory();
-  const location = useLocation<LocationState>();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const { from } = location.state || { from: { pathname: "/" } };
+  console.log(location);
+
+  const pathname = (location as any).state?.from.pathname || "/";
+
+  console.log(pathname);
 
   const signInWithGoogle = () => {
     const provider = new GoogleAuthProvider();
@@ -35,7 +33,7 @@ const SignIn = () => {
     signInWithPopup(auth, provider)
       .then(onSignInSucceed)
       .then(() => {
-        history.push(from);
+        navigate(pathname);
       });
   };
 
@@ -45,7 +43,7 @@ const SignIn = () => {
     signInWithPopup(auth, provider)
       .then(onSignInSucceed)
       .then(() => {
-        history.push(from);
+        navigate(pathname);
       });
   };
 
