@@ -13,7 +13,6 @@ import { useHiddenChannel } from "hooks/useHiddenChannel";
 import { useTranslation } from "react-i18next";
 import {
   ContentContainer,
-  MenuContainer,
   MenuContentContainer,
   ScreenContainer,
 } from "./layouts";
@@ -22,6 +21,7 @@ import ChannelScreenSkeletons from "./components/ChannelScreenSkeletons";
 import { useAuthState } from "react-firebase-hooks/auth";
 import MenuHeader from "./components/MenuHeader";
 import MenuFooter from "./components/MenuFooter";
+import { MenuContainer } from "./components/MenuContainer";
 
 const ChannelScreen = () => {
   const [user] = useAuthState(auth);

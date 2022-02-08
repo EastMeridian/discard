@@ -83,7 +83,7 @@ const MenuFooter = () => {
               <ListItemText primary="Mode" />
               <div style={{ position: "relative" }}>
                 <ThemeModeSwitch
-                  checked={themeMode === "light"}
+                  checked={themeMode !== "light"}
                   onChange={() =>
                     setThemeMode(themeMode === "light" ? "dark" : "light")
                   }

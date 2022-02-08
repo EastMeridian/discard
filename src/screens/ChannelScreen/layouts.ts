@@ -6,13 +6,6 @@ export const ScreenContainer = styled.div`
   height: 100%;
 `;
 
-export const MenuContainer = styled.div`
-  background-color: #f2f3f5;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-`;
-
 export const MenuHeaderContainer = styled.div`
   padding: 0.5rem 0.5rem 0.5rem 1rem;
   display: flex;

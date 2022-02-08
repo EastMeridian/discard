@@ -1,17 +1,17 @@
+import { styled } from "@mui/material";
 import { DropzoneOverlay } from "components/molecules/DropzoneOverlay";
 import { useFileSelector } from "contexts/FileSelectorContext";
 import { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
-import styled from "styled-components";
 
-const Container = styled.main`
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  background-color: white;
-  padding: 0;
-`;
+const Container = styled("div")(({ theme }) => ({
+  position: "relative",
+  display: "flex",
+  flexDirection: "column",
+  flex: 1,
+  backgroundColor: theme.colors.surface.paper,
+  padding: 0,
+}));
 
 interface ScreenContainerProps {
   children: React.ReactNode;
