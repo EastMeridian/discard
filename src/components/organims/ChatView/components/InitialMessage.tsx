@@ -3,18 +3,19 @@ import AvatarMembersGroup from "components/molecules/AvatarMembersGroup";
 import { User } from "models/user";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "services/firestore";
-import styled from "styled-components";
+import { styled } from "@mui/material";
 import { classifyMembers } from "utils/members";
 
 interface Props {
   members: User[];
 }
 
-const Container = styled.div`
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-`;
+const Container = styled("div")(({ theme }) => ({
+  padding: "1rem",
+  display: "flex",
+  flexDirection: "column",
+  color: theme.colors.text.main,
+}));
 
 const InitialMessage = ({ members }: Props) => {
   const [user] = useAuthState(auth);

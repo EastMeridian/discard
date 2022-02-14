@@ -5,9 +5,14 @@ declare module "@mui/material/styles/createTheme" {
     colors: {
       surface: {
         main: string;
+        light: string;
         dark: string;
         active: string;
+        background: string;
         paper: string;
+      };
+      text: {
+        main: string;
       };
     };
   }
@@ -16,9 +21,14 @@ declare module "@mui/material/styles/createTheme" {
     colors: {
       surface: {
         main: string;
+        light: string;
         dark: string;
         active: string;
+        background: string;
         paper: string;
+      };
+      text: {
+        main: string;
       };
     };
   }

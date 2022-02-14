@@ -9,7 +9,7 @@ const Container = styled("div")(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
   flex: 1,
-  backgroundColor: theme.colors.surface.paper,
+  backgroundColor: theme.colors.surface.background,
   padding: 0,
 }));
 

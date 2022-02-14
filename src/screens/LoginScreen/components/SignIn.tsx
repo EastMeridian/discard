@@ -33,7 +33,7 @@ const SignIn = () => {
     signInWithPopup(auth, provider)
       .then(onSignInSucceed)
       .then(() => {
-        navigate(pathname);
+        navigate(pathname, { replace: true });
       });
   };
 
@@ -43,7 +43,7 @@ const SignIn = () => {
     signInWithPopup(auth, provider)
       .then(onSignInSucceed)
       .then(() => {
-        navigate(pathname);
+        navigate(pathname, { replace: true });
       });
   };
 

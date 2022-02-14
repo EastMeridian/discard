@@ -1,8 +1,9 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { createGenericContext } from "utils/createGenericContext";
 import { ThemeProvider } from "@mui/system";
 
 import { lightTheme, darkTheme } from "theme";
+import { useLocalStorage } from "hooks/useLocalStorage";
 
 type ThemeMode = "light" | "dark";
 interface ThemeModeContext {
@@ -20,11 +21,32 @@ interface ThemeModeContextProviderProviderProps {
 const ThemeModeProvider = ({
   children,
 }: ThemeModeContextProviderProviderProps) => {
-  const [themeMode, setThemeMode] = useState<ThemeMode>("light");
-
-  const value = useMemo(() => ({ setThemeMode, themeMode }), [themeMode]);
+  const [themeMode, setThemeMode] = useLocalStorage<ThemeMode>(
+    "themeMode",
+    window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
+  );
 
   const theme = themeMode === "light" ? lightTheme : darkTheme;
+
+  useEffect(() => {
+    window
+      .matchMedia("(prefers-color-scheme: dark)")
+      .addEventListener("change", (e) =>
+        setThemeMode(e.matches ? "dark" : "light")
+      );
+
+    return () => {
+      window
+        .matchMedia("(prefers-color-scheme: dark)")
+        .removeEventListener("change", () => {});
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const value = useMemo(
+    () => ({ setThemeMode, themeMode }),
+    [themeMode, setThemeMode]
+  );
 
   console.log({ themeMode });
   return (

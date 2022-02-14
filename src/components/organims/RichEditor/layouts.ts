@@ -3,14 +3,15 @@ import Paper from "@mui/material/Paper";
 import ToggleButton from "@mui/material/ToggleButton";
 
 import styled from "styled-components";
+import { styled as styledMui } from "@mui/material";
 
-export const RichEditorPaper = styled(Paper)`
-  padding: 0.5rem 0.75rem;
-  display: flex;
-  flex-direction: column;
-  background-color: white;
-  cursor: text;
-`;
+export const RichEditorPaper = styledMui(Paper)(({ theme }) => ({
+  padding: "0.5rem 0.75rem",
+  display: "flex",
+  flexDirection: "column",
+  backgroundColor: theme.colors.surface.paper,
+  cursor: "text",
+}));
 
 export const RichEditorContainer = styled.div`
   padding: 0.6rem 0;

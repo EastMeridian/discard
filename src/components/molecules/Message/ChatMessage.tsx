@@ -3,27 +3,29 @@ import { Message, MessageType } from "models/message";
 import styled from "styled-components";
 import FileContent from "./components/FileContent";
 import TextContent from "./components/TextContent";
+import { styled as styledMui } from "@mui/material";
 
 export interface MessageProps {
   message: Message;
   style?: React.CSSProperties;
 }
 
-const Container = styled.div`
-  display: flex;
-  align-items: start;
-  &:hover {
-    background-color: #fafafa;
-  }
-  padding: 0.5rem 1rem;
-`;
+const Container = styledMui("div")(({ theme }) => ({
+  display: "flex",
+  alignItems: "start",
+  "&:hover": {
+    backgroundColor: theme.colors.surface.light,
+  },
+  padding: "0.5rem 1rem",
+}));
 
-export const MessageContentContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex: 1rem;
-  margin: 0 1rem;
-`;
+export const MessageContentContainer = styledMui("div")(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  flex: "1rem",
+  margin: "0 1rem",
+  color: theme.colors.text.main,
+}));
 
 const getMessageContent = (
   type: MessageType

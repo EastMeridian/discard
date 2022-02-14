@@ -34,7 +34,7 @@ const MenuHeader = ({ onCreateChannel }: MenuHeaderProps) => {
           {t("messages")}
         </Typography>
 
-        <Tooltip title="Create a channel" arrow>
+        <Tooltip title={t("createChannel")!}>
           <IconButton aria-label="add" onClick={handleOpenPopover}>
             <AddIcon />
           </IconButton>

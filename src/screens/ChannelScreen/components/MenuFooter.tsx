@@ -43,6 +43,7 @@ function SignOut() {
 
 const MenuFooter = () => {
   const { themeMode, setThemeMode } = useThemeMode();
+  const { t } = useTranslation();
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
   const handleOpenPopover = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -63,7 +64,7 @@ const MenuFooter = () => {
           sx={{ width: "1.5rem", height: "1.5rem" }}
         />
         <FooterUsername>{auth.currentUser?.displayName}</FooterUsername>
-        <Tooltip title="User settings" arrow>
+        <Tooltip title={t("userSettings") || ""}>
           <IconButton aria-label="settings" onClick={handleOpenPopover}>
             <SettingsIcon />
           </IconButton>

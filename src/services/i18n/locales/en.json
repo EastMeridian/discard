@@ -17,6 +17,8 @@
       "create": "Create Channel"
     },
     "messages": "Messages",
-    "uploadFile": "Upload in Discard"
+    "uploadFile": "Upload in Discard",
+    "userSettings": "User settings",
+    "createChannel": "Create a channel"
   }
 }

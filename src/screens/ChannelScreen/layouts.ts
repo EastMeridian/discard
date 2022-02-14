@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { styled as styledMui } from "@mui/material";
 
 export const ScreenContainer = styled.div`
   display: flex;
@@ -18,14 +19,14 @@ export const MenuContentContainer = styled.div`
   padding: 0 0.5rem;
 `;
 
-export const MenuFooterContainer = styled.div`
-  background-color: #ebedef;
-  height: 3rem;
-  padding: 0 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`;
+export const MenuFooterContainer = styledMui("div")(({ theme }) => ({
+  backgroundColor: theme.colors.surface.dark,
+  height: "3rem",
+  padding: "0 1rem",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-between",
+}));
 
 export const FooterUsername = styled.div`
   flex: 1;
@@ -35,8 +36,9 @@ export const FooterUsername = styled.div`
   margin-left: 0.5rem;
 `;
 
-export const ContentContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-`;
+export const ContentContainer = styledMui("div")(({ theme }) => ({
+  backgroundColor: theme.colors.surface.background,
+  display: "flex",
+  flexDirection: "column",
+  flex: 1,
+}));

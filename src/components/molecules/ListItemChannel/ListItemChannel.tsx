@@ -6,6 +6,7 @@ import { User } from "models/user";
 import React, { useState } from "react";
 import { classifyMembers } from "utils/members";
 import styled from "styled-components";
+import { useTheme } from "@mui/material/styles";
 
 interface Props {
   members: User[];
@@ -48,6 +49,7 @@ const ListItemChannel = ({
   onDelete,
   user,
 }: Props) => {
+  const theme = useTheme();
   const [hovered, setHovered] = useState(false);
 
   const classified = classifyMembers(members, user);
@@ -57,7 +59,7 @@ const ListItemChannel = ({
       sx={{
         borderRadius: "6px",
         padding: 0,
-        backgroundColor: selected ? "#d3d7db" : "transparent",
+        backgroundColor: selected ? theme.colors.surface.active : "transparent",
       }}
       onClick={onClick}
       onMouseEnter={() => setHovered(true)}
