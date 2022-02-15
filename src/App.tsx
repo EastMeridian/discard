@@ -11,6 +11,7 @@ import { SnackbarProvider } from "contexts/SnackbarContext";
 
 function App() {
   const { listen } = createBrowserHistory();
+
   useEffect(() => {
     const unlisten = listen(({ location }) => {
       console.log(location);
@@ -19,7 +20,7 @@ function App() {
     });
 
     return () => unlisten();
-  });
+  }, [listen]);
 
   return (
     <FileSelectorProvider>

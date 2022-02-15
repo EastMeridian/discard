@@ -11,18 +11,17 @@ import {
   orderBy,
   getDocs,
 } from "@firebase/firestore";
+import { URL } from "constants/urls";
 import { User } from "models/user";
 import { auth, db } from "services/firestore";
 
-export const createUser = async ({
-  uid,
-  displayName,
-  photoURL,
-  email,
-}: User) => {
+export const createUser = async (
+  { uid, displayName, photoURL, email, token }: User & { token?: string },
+  skipPermissions = false
+) => {
   const userRef = doc(db, "users", uid);
 
-  const exist = await userExists(uid);
+  const exist = skipPermissions ? false : await userExists(uid);
 
   if (!exist) {
     await setDoc(userRef, {
@@ -30,6 +29,7 @@ export const createUser = async ({
       displayName,
       photoURL,
       email,
+      token,
     });
   }
 };
@@ -67,4 +67,22 @@ export const searchUser = async (text: string) => {
       return { id, ...user };
     })
     .filter(({ uid }) => uid !== auth.currentUser?.uid);
+};
+
+export const createFakeUsers = async (length: number = 30) => {
+  const raw = await fetch(`${URL.randomuser}${length}`);
+
+  const { results } = await raw.json();
+
+  const users = results.map(({ picture, name, email }: any, index: number) => ({
+    uid: `TESTUID_${index}`,
+    displayName: `${name.first} ${name.last}`,
+    photoURL: picture.thumbnail,
+    email,
+    token: process.env.REACT_APP_TEST_TOKEN,
+  }));
+
+  for (const user of users) {
+    await createUser(user, true);
+  }
 };

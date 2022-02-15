@@ -6,6 +6,7 @@ interface Props {
   onChange?: (text: string) => void;
   placeholder?: string;
   style?: React.CSSProperties;
+  autoFocus?: boolean;
 }
 
 const StyledTextInput = styled.input`
@@ -17,12 +18,19 @@ const StyledTextInput = styled.input`
   border-radius: 6px;
 `;
 
-const TextInput = ({ value, onChange, placeholder, style }: Props) => (
+const TextInput = ({
+  value,
+  onChange,
+  placeholder,
+  style,
+  autoFocus,
+}: Props) => (
   <StyledTextInput
     value={value}
     onChange={(e) => onChange?.(e.target.value)}
     placeholder={placeholder}
     style={style}
+    autoFocus={autoFocus}
   />
 );
 

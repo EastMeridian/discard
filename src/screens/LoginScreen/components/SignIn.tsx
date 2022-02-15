@@ -1,50 +1,72 @@
-import { Button } from "@mui/material";
+import { Button, FormControl, FormHelperText } from "@mui/material";
 import {
   GoogleAuthProvider,
   signInWithPopup,
   FacebookAuthProvider,
   UserCredential,
+  AuthProvider,
 } from "firebase/auth";
 import { useLocation, useNavigate } from "react-router-dom";
 import { createUser } from "services/api/users";
 import { auth } from "services/firestore";
 import { useTranslation } from "react-i18next";
+import { useState } from "react";
+import TextInput from "components/atoms/TextInput";
+import { config } from "services/config";
 
-const onSignInSucceed = async ({ user }: UserCredential) => {
+const onSignInSucceed = async ({
+  user,
+  token,
+}: Pick<UserCredential, "user"> & { token?: string }) => {
   const { uid, displayName, photoURL, email } = user;
 
-  await createUser({ uid, displayName, photoURL, email });
+  await createUser({
+    uid,
+    displayName,
+    photoURL,
+    email,
+    token,
+  });
 };
 
 const SignIn = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
-
+  const [token, setToken] = useState("");
+  const [error, setError] = useState<string | null>(null);
   console.log(location);
 
   const pathname = (location as any).state?.from.pathname || "/";
 
   console.log(pathname);
 
-  const signInWithGoogle = () => {
-    const provider = new GoogleAuthProvider();
-
+  const signIn = (provider: AuthProvider) => {
     signInWithPopup(auth, provider)
-      .then(onSignInSucceed)
-      .then(() => {
-        navigate(pathname, { replace: true });
-      });
+      .then(({ user }) => onSignInSucceed({ user, token }))
+      .then(() => navigate(pathname, { replace: true }))
+      .catch((e) => setError(e.message));
+  };
+
+  const signInWithGoogle = () => {
+    if (config.tokenAuthentication && token === "") {
+      return setError("Signup token must be provided.");
+    }
+    const provider = new GoogleAuthProvider();
+    signIn(provider);
   };
 
   const signInWithFacebook = () => {
+    if (config.tokenAuthentication && token === "") {
+      return setError("Signup token must be provided.");
+    }
     const provider = new FacebookAuthProvider();
+    signIn(provider);
+  };
 
-    signInWithPopup(auth, provider)
-      .then(onSignInSucceed)
-      .then(() => {
-        navigate(pathname, { replace: true });
-      });
+  const onTokenChange = (value: string) => {
+    if (error !== null) setError(null);
+    setToken(value);
   };
 
   return (
@@ -55,10 +77,22 @@ const SignIn = () => {
         flexDirection: "column",
       }}
     >
+      {config.tokenAuthentication && (
+        <FormControl error={Boolean(error)} variant="standard">
+          <TextInput
+            value={token}
+            onChange={onTokenChange}
+            placeholder="TOKEN"
+            autoFocus
+          />
+
+          <FormHelperText id="component-error-text">{error}</FormHelperText>
+        </FormControl>
+      )}
       <Button
         onClick={signInWithGoogle}
         variant="outlined"
-        sx={{ height: "2.5rem", backgroundColor: "white" }}
+        sx={{ height: "2.5rem", backgroundColor: "white", marginTop: "1rem" }}
       >
         <img
           src={"/google.png"}
