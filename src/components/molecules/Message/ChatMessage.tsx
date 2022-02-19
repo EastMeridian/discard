@@ -1,6 +1,5 @@
 import { Avatar, Typography } from "@mui/material";
 import { Message, MessageType } from "models/message";
-import styled from "styled-components";
 import FileContent from "./components/FileContent";
 import TextContent from "./components/TextContent";
 import { styled as styledMui } from "@mui/material";
