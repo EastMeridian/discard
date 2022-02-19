@@ -1,7 +1,7 @@
+import { styled } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Checkbox from "@mui/material/Checkbox";
 import { User } from "models/user";
-import styled from "styled-components";
 
 interface Props {
   user: User;
@@ -9,16 +9,16 @@ interface Props {
   selected?: boolean;
 }
 
-const ListItemPickableUserLayout = styled.div`
-  display: flex;
-  align-items: center;
-  padding: 0.5rem;
-  &:hover {
-    background-color: #fafafa;
-  }
-  cursor: pointer;
-  justify-content: space-between;
-`;
+const ListItemPickableUserLayout = styled("div")(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  padding: "0.5rem",
+  "&:hover": {
+    backgroundColor: theme.colors.surface.light,
+  },
+  cursor: "pointer",
+  justifyContent: "space-between",
+}));
 
 const ListItemPickableUser = ({ user, onClick, selected }: Props) => {
   const { photoURL, displayName } = user;

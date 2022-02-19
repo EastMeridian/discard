@@ -1,5 +1,5 @@
+import { styled } from "@mui/material";
 import React from "react";
-import styled from "styled-components";
 
 interface Props {
   value?: string;
@@ -9,14 +9,15 @@ interface Props {
   autoFocus?: boolean;
 }
 
-const StyledTextInput = styled.input`
-  border: none;
-  outline: none;
-  flex: 1;
-  background-color: #eaedef;
-  padding: 0.75rem;
-  border-radius: 6px;
-`;
+const StyledTextInput = styled("input")(({ theme }) => ({
+  border: "none",
+  outline: "none",
+  flex: 1,
+  backgroundColor: theme.colors.surface.dark,
+  color: theme.colors.text.main,
+  padding: "0.75rem",
+  borderRadius: "6px",
+}));
 
 const TextInput = ({
   value,

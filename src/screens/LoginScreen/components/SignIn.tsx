@@ -92,7 +92,7 @@ const SignIn = () => {
       <Button
         onClick={signInWithGoogle}
         variant="outlined"
-        sx={{ height: "2.5rem", backgroundColor: "white", marginTop: "1rem" }}
+        sx={{ height: "2.5rem", marginTop: "1rem" }}
       >
         <img
           src={"/google.png"}

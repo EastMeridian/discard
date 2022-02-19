@@ -1,9 +1,12 @@
 import styled from "styled-components";
+import { styled as styledMui } from "@mui/material/styles";
 
-export const ScreenContainer = styled.div`
-  height: 100%;
-  display: flex;
-`;
+export const ScreenContainer = styledMui("div")(({ theme }) => ({
+  height: "100%",
+  display: "flex",
+  backgroundColor: theme.colors.surface.background,
+  color: theme.colors.text.main,
+}));
 
 export const ContentContainer = styled.div`
   width: 100%;

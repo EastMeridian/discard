@@ -4,12 +4,10 @@ import { useTranslation } from "react-i18next";
 
 const Container = styled("div")(({ theme }) => ({
   position: "absolute",
-  /*   top: 0,
-  left: 0, */
   width: "100%",
   height: "100%",
   backgroundColor: theme.colors.surface.main + "e9",
-  color: theme.colors.surface.active,
+  color: theme.colors.text.main,
   display: "flex",
   alignItems: "center",
   justifyContent: "center",

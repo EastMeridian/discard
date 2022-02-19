@@ -43,10 +43,12 @@ const LoginScreen = () => {
             alt=""
             style={{ marginRight: "0.5rem" }}
           />
-          <Typography variant="h3">{t("discard")}</Typography>
+          <Typography variant="h3" color="inherit">
+            {t("discard")}
+          </Typography>
         </div>
         <CenterLayout>
-          <Typography variant="h3" style={sentence1Style}>
+          <Typography variant="h3" style={sentence1Style} color="inherit">
             {t("login.sentence1")}
           </Typography>
           <Typography style={sentence2style}>{t("login.sentence2")}</Typography>
