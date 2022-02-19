@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { styled as styledMui } from "@mui/material/styles";
 
 export const ScreenContainer = styledMui("div")(({ theme }) => ({
-  height: "100%",
+  height: "100vh",
   display: "flex",
   backgroundColor: theme.colors.surface.background,
   color: theme.colors.text.main,
@@ -14,7 +14,6 @@ export const ContentContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  height: 100%;
   padding: 2rem 1rem;
 `;
 
