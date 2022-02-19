@@ -16,8 +16,9 @@ import {
 const sentence1Style: CSSProperties = {
   marginBottom: "1rem",
   textAlign: "center",
-  width: "32rem",
+  width: isMobile ? "16rem" : "32rem",
   maxWidth: "100%",
+  fontSize: isMobile ? "1.8rem" : "3rem",
 };
 
 const sentence2style: CSSProperties = {

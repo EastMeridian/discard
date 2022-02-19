@@ -23,7 +23,7 @@ const ThemeModeProvider = ({
 }: ThemeModeContextProviderProviderProps) => {
   const [themeMode, setThemeMode] = useLocalStorage<ThemeMode>(
     "themeMode",
-    window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
+    "light"
   );
 
   const theme = themeMode === "light" ? lightTheme : darkTheme;
