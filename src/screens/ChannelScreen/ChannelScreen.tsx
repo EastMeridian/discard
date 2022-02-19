@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useChannels } from "hooks/useChannels";
 import { auth, db } from "services/firestore";
 import Typography from "@mui/material/Typography";
