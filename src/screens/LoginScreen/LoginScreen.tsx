@@ -34,7 +34,11 @@ const LoginScreen = () => {
 
   return (
     <ScreenContainer>
-      {!isMobile && <DesktopImage src="/login.webp" alt="message" />}
+      {!isMobile && (
+        <div style={{ width: "50vw" }}>
+          <DesktopImage src="/login.webp" alt="message" />
+        </div>
+      )}
       <ContentContainer>
         <div style={{ display: "flex", alignItems: "center" }}>
           <img
