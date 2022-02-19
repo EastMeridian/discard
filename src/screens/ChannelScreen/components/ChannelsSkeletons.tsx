@@ -1,6 +1,6 @@
 import Skeleton from "@mui/material/Skeleton";
 
-const ChannelScreenSkeletons = () => (
+const ChannelSkeletons = () => (
   <div style={{ padding: "0 0.5rem" }}>
     <Skeleton height="3rem" />
     <Skeleton height="3rem" sx={{ marginLeft: "1rem" }} />
@@ -8,4 +8,4 @@ const ChannelScreenSkeletons = () => (
   </div>
 );
 
-export default ChannelScreenSkeletons;
+export default ChannelSkeletons;

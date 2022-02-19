@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useChannels } from "hooks/useChannels";
 import { auth, db } from "services/firestore";
-import Typography from "@mui/material/Typography";
 import { Channel } from "models/channel";
 import { User } from "models/user";
 import ChatHeader from "components/organims/ChatView/components/ChatHeader";
@@ -16,12 +15,13 @@ import {
   MenuContentContainer,
   ScreenContainer,
 } from "./layouts";
-import ChatScreen from "../../components/organims/ChatView";
-import ChannelScreenSkeletons from "./components/ChannelScreenSkeletons";
+import ChatView from "components/organims/ChatView";
+import ChannelSkeletons from "./components/ChannelsSkeletons";
 import { useAuthState } from "react-firebase-hooks/auth";
 import MenuHeader from "./components/MenuHeader";
 import MenuFooter from "./components/MenuFooter";
 import { MenuContainer } from "./components/MenuContainer";
+import DiscardLogo from "components/atoms/DiscardLogo";
 
 const ChannelScreen = () => {
   const [user] = useAuthState(auth);
@@ -69,18 +69,11 @@ const ChannelScreen = () => {
       >
         <MenuContainer>
           <Header style={{ justifyContent: "flex-start" }}>
-            <img
-              src="/logo.png"
-              height="32px"
-              width="32px"
-              alt=""
-              style={{ marginRight: "0.5rem" }}
-            />
-            <Typography variant="h5">{t("discard")}</Typography>
+            <DiscardLogo />
           </Header>
           <MenuHeader onCreateChannel={handleCreateChannel} />
           <MenuContentContainer>
-            {loading && <ChannelScreenSkeletons />}
+            {loading && <ChannelSkeletons />}
             {!loading &&
               filteredChannels?.map((channel) => {
                 const { id, members } = channel;
@@ -104,7 +97,7 @@ const ChannelScreen = () => {
           members={selectedChannel?.members}
           onToggleDrawer={handleDrawerToggle}
         />
-        {selectedChannel && <ChatScreen channel={selectedChannel} />}
+        {selectedChannel && <ChatView channel={selectedChannel} />}
       </ContentContainer>
     </ScreenContainer>
   );

@@ -1,7 +1,10 @@
 import LoginPage from "screens/LoginScreen";
 import { Routes, Route, Navigate } from "react-router-dom";
-import ChannelScreen from "screens/ChannelScreen";
 import RequireAuth from "./RequireAuth";
+import { Suspense, lazy } from "react";
+import ChannelScreenSkeletons from "screens/ChannelScreen/components/ChannelScreenSkeleton";
+
+const ChannelScreen = lazy(() => import("screens/ChannelScreen"));
 
 const RootRoutes = () => (
   <Routes>
@@ -11,7 +14,9 @@ const RootRoutes = () => (
         path=":channelID"
         element={
           <RequireAuth>
-            <ChannelScreen />
+            <Suspense fallback={<ChannelScreenSkeletons />}>
+              <ChannelScreen />
+            </Suspense>
           </RequireAuth>
         }
       />
