@@ -24,7 +24,9 @@ const RootRoutes = () => (
         path=""
         element={
           <RequireAuth>
-            <ChannelScreen />
+            <Suspense fallback={<ChannelScreenSkeletons />}>
+              <ChannelScreen />
+            </Suspense>
           </RequireAuth>
         }
       />
