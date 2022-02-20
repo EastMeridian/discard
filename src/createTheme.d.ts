@@ -13,6 +13,7 @@ declare module "@mui/material/styles/createTheme" {
       };
       text: {
         main: string;
+        subtitle: string;
       };
     };
   }
@@ -29,6 +30,7 @@ declare module "@mui/material/styles/createTheme" {
       };
       text: {
         main: string;
+        subtitle: string;
       };
     };
   }

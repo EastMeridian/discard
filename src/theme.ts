@@ -19,6 +19,7 @@ const lightTheme = createTheme({
     },
     text: {
       main: "black",
+      subtitle: "#919191",
     },
   },
 });
@@ -38,6 +39,7 @@ const darkTheme = createTheme({
     },
     text: {
       main: "#E3E6EA",
+      subtitle: "#919191",
     },
   },
 });

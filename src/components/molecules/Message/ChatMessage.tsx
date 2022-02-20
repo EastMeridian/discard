@@ -1,8 +1,9 @@
-import { Avatar, Typography } from "@mui/material";
+import { Avatar, Typography, useTheme } from "@mui/material";
 import { Message, MessageType } from "models/message";
 import FileContent from "./components/FileContent";
 import TextContent from "./components/TextContent";
 import { styled as styledMui } from "@mui/material";
+import { format } from "date-fns";
 
 export interface MessageProps {
   message: Message;
@@ -38,7 +39,8 @@ const getMessageContent = (
 };
 
 const ChatMessage = ({ message, style }: MessageProps) => {
-  const { photoURL, displayName, type } = message;
+  const theme = useTheme();
+  const { photoURL, displayName, type, createdAt } = message;
 
   const Component = getMessageContent(type);
   console.log({ type });
@@ -46,7 +48,16 @@ const ChatMessage = ({ message, style }: MessageProps) => {
     <Container style={style}>
       <Avatar src={photoURL || undefined} alt={displayName || "user"} />
       <MessageContentContainer>
-        <Typography>{displayName}</Typography>
+        <div
+          style={{ display: "flex", gap: "0.25rem", alignItems: "flex-end" }}
+        >
+          <Typography sx={{ fontWeight: "bold" }}>{displayName}</Typography>
+          <Typography
+            sx={{ color: theme.colors.text.subtitle, fontSize: "0.8rem" }}
+          >
+            {format(createdAt.toMillis(), "dd/MM/y")}
+          </Typography>
+        </div>
         <Component message={message} />
       </MessageContentContainer>
     </Container>
