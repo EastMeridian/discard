@@ -5,6 +5,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "services/firestore";
 import { styled } from "@mui/material";
 import { classifyMembers } from "utils/members";
+import { useTranslation } from "react-i18next";
 
 interface Props {
   members: User[];
@@ -18,6 +19,7 @@ const Container = styled("div")(({ theme }) => ({
 }));
 
 const InitialMessage = ({ members }: Props) => {
+  const { t } = useTranslation();
   const [user] = useAuthState(auth);
   const classified = classifyMembers(members, user);
 
@@ -33,7 +35,7 @@ const InitialMessage = ({ members }: Props) => {
         {classified.others.map(({ displayName }) => displayName).join(", ")}
       </Typography>
       <div>
-        Ceci est le tout début de votre historique des messages directs avec{" "}
+        {t("initialMessage")}{" "}
         {classified.others.map(({ displayName }) => displayName).join(", ")}
       </div>
     </Container>

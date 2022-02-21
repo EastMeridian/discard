@@ -13,12 +13,13 @@
       "placeholder": "Write something"
     },
     "channel": {
-      "select": "Select one user",
-      "create": "Create Channel"
+      "select": "Select one user to chat",
+      "create": "Create conversation"
     },
     "messages": "Messages",
     "uploadFile": "Upload in Discard",
     "userSettings": "User settings",
-    "createChannel": "Create a channel"
+    "createChannel": "Create a channel",
+    "initialMessage": "This is the very beginning of your direct message history with"
   }
 }
