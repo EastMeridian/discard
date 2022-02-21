@@ -51,9 +51,19 @@ const ChatMessage = ({ message, style }: MessageProps) => {
         <div
           style={{ display: "flex", gap: "0.25rem", alignItems: "flex-end" }}
         >
-          <Typography sx={{ fontWeight: "bold" }}>{displayName}</Typography>
           <Typography
-            sx={{ color: theme.colors.text.subtitle, fontSize: "0.8rem" }}
+            sx={{
+              fontWeight: "bold",
+            }}
+          >
+            {displayName}
+          </Typography>
+          <Typography
+            sx={{
+              color: theme.colors.text.subtitle,
+              fontSize: "0.8rem",
+              paddingBottom: "1px",
+            }}
           >
             {format(createdAt.toMillis(), "dd/MM/y")}
           </Typography>
