@@ -9,7 +9,6 @@ import ListItemChannel from "components/molecules/ListItemChannel";
 import Header from "components/atoms/Header";
 import { useSelectedChannel } from "hooks/useSelectedChannel";
 import { useHiddenChannel } from "hooks/useHiddenChannel";
-import { useTranslation } from "react-i18next";
 import {
   ContentContainer,
   MenuContentContainer,
@@ -25,7 +24,6 @@ import DiscardLogo from "components/atoms/DiscardLogo";
 
 const ChannelScreen = () => {
   const [user] = useAuthState(auth);
-  const { t } = useTranslation();
   const { hiddenChannels, hideChannel, unhideChannel } = useHiddenChannel();
   const [{ channels, loading }, createChannel] = useChannels(auth, db);
   const [selectedChannel, setSelectedChannel] = useSelectedChannel(channels);
