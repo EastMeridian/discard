@@ -6,7 +6,7 @@ import {
   UserCredential,
   AuthProvider,
 } from "firebase/auth";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { createUser } from "services/api/users";
 import { auth } from "services/firestore";
 import { useTranslation } from "react-i18next";
@@ -30,10 +30,11 @@ const onSignInSucceed = async ({
 };
 
 const SignIn = () => {
+  let [params] = useSearchParams();
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
-  const [token, setToken] = useState("");
+  const [token, setToken] = useState(params.get("token") ?? "");
   const [error, setError] = useState<string | null>(null);
   console.log(location);
 
