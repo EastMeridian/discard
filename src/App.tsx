@@ -14,7 +14,6 @@ function App() {
 
   useEffect(() => {
     const unlisten = listen(({ location }) => {
-      console.log(location);
       setCurrentScreen(analytics, location.pathname);
       logEvent(analytics, "page_view", { location: location.pathname });
     });

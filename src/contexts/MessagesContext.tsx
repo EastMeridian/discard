@@ -56,7 +56,7 @@ const getLastMessageTime = (messages: Message[], currentTime?: Date) => {
 
 const messagesReducer = (state: ReducerState, action: ReducerAction) => {
   const channel = state[action.value.channelID];
-  console.log("[messageReducer] next action", action.type);
+
   switch (action.type) {
     case "ADD_MESSAGES": {
       const { messages } = action.value;
@@ -117,7 +117,6 @@ const [useMessageContext, MessagesContextProvider] =
 
 export const useMessageStore = (selectedChannelID: string) => {
   const { value, dispatch } = useMessageContext();
-  /* console.log("useMessageStore", { selectedChannelID, value }); */
 
   const addMessages = (channelID: string, messages: Message[]) => {
     dispatch({ type: "ADD_MESSAGES", value: { channelID, messages } });

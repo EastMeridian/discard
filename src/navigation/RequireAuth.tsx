@@ -9,10 +9,9 @@ interface Props {
 const RequireAuth = ({ children }: Props) => {
   const location = useLocation();
   const [user, loaded] = useAuthState(auth);
-  console.log("currentUser", loaded, user);
 
   if (loaded) return null;
-  if (!auth.currentUser) {
+  if (!user) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 

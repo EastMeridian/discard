@@ -86,9 +86,6 @@ export const useChat = ({
   useSnapshotManager(
     { channelID, query: messageQuery },
     (snapshot: QuerySnapshot<DocumentData>) => {
-      /*       const lastVisible = snapshot.docs[snapshot.docs.length - 1];
-      console.log({ lastVisible }, snapshot, snapshot.docs.length); */
-
       const { added } = dispatchMessageSnapshot(snapshot);
       addMessages(channelID, added);
     }
@@ -117,7 +114,7 @@ export const useChat = ({
     if (currentUser) {
       try {
         const { uid, photoURL, displayName } = currentUser;
-        console.log({ text });
+
         if (text) {
           createMessage({
             uid,
@@ -131,10 +128,6 @@ export const useChat = ({
 
         if (files.length > 0) {
           setSnackbarLoading(true);
-          console.log(
-            "[upload] uploading",
-            files.map(({ name }) => name)
-          );
 
           const snapshots = await uploadManyFiles(files);
           const messageFiles = await Promise.all(

@@ -43,7 +43,7 @@ const ChatMessage = ({ message, style }: MessageProps) => {
   const { photoURL, displayName, type, createdAt } = message;
 
   const Component = getMessageContent(type);
-  console.log({ type });
+
   return (
     <Container style={style}>
       <Avatar src={photoURL || undefined} alt={displayName || "user"} />

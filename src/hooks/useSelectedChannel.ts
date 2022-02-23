@@ -9,8 +9,6 @@ export const useSelectedChannel = (
   const { channelID } = useParams<{ channelID: string }>();
   const [selectedChannel, setSelectedChannel] = useState<Channel | undefined>();
 
-  console.log(channelID);
-
   const handleSelectChannel = useCallback(
     (channel?: Channel) => {
       const nextChannel = channel ?? channels?.[0];

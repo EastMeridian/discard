@@ -36,11 +36,7 @@ const SignIn = () => {
   const location = useLocation();
   const [token, setToken] = useState(params.get("token") ?? "");
   const [error, setError] = useState<string | null>(null);
-  console.log(location);
-
   const pathname = (location as any).state?.from.pathname || "/";
-
-  console.log(pathname);
 
   const signIn = (provider: AuthProvider) => {
     signInWithPopup(auth, provider)

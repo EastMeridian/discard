@@ -48,7 +48,6 @@ const ThemeModeProvider = ({
     [themeMode, setThemeMode]
   );
 
-  console.log({ themeMode });
   return (
     <ThemeContextProvider value={value}>
       <ThemeProvider theme={theme}>{children}</ThemeProvider>

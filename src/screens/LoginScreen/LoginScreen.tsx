@@ -1,9 +1,7 @@
 import { Typography } from "@mui/material";
 import { CSSProperties } from "react";
 import { isMobile } from "react-device-detect";
-import { useAuthState } from "react-firebase-hooks/auth";
 import { useTranslation } from "react-i18next";
-import { auth } from "services/firestore";
 import SignIn from "./components/SignIn";
 import {
   CenterLayout,
@@ -28,9 +26,6 @@ const sentence2style: CSSProperties = {
 
 const LoginScreen = () => {
   const { t } = useTranslation();
-  const [user] = useAuthState(auth);
-
-  console.log("LoginScreen", user);
 
   return (
     <ScreenContainer>
