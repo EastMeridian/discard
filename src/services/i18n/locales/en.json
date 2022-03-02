@@ -20,6 +20,10 @@
     "uploadFile": "Upload in Discard",
     "userSettings": "User settings",
     "createChannel": "Create a channel",
-    "initialMessage": "This is the very beginning of your direct message history with"
+    "initialMessage": "This is the very beginning of your direct message history with",
+    "authorization": {
+      "authorizeApp": "Authorize Discard to use your microphone and camera",
+      "authorizeAppSubtitle": "Discard needs to be able to access your camera and microphone to allow other participants to see and hear you. You will need to confirm this choice on each browser and computer you use."
+    }
   }
 }

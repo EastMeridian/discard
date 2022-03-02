@@ -5,7 +5,10 @@ import AvatarMembersGroup from "components/molecules/AvatarMembersGroup";
 import MenuIcon from "@mui/icons-material/Menu";
 import IconButton from "@mui/material/IconButton";
 import { useAuthState } from "react-firebase-hooks/auth";
+import CallIcon from "@mui/icons-material/Call";
 import { auth } from "services/firestore";
+import { Link } from "react-router-dom";
+
 interface Props {
   members?: User[];
   onToggleDrawer?: () => void;
@@ -17,7 +20,12 @@ const ChatHeader = ({ members = [], onToggleDrawer }: Props) => {
 
   return (
     <Header>
-      <div style={{ display: "flex", alignItems: "center" }}>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
         <IconButton
           color="inherit"
           aria-label="open drawer"
@@ -32,6 +40,11 @@ const ChatHeader = ({ members = [], onToggleDrawer }: Props) => {
           {others.map(({ displayName }) => displayName).join(", ")}
         </div>
       </div>
+      <Link to={`/call?${others.map(({ uid }) => uid)}`} target="_blank">
+        <IconButton>
+          <CallIcon />
+        </IconButton>
+      </Link>
     </Header>
   );
 };

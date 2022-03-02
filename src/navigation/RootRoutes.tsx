@@ -3,8 +3,8 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import RequireAuth from "./RequireAuth";
 import { Suspense, lazy } from "react";
 import ChannelScreenSkeletons from "screens/ChannelScreen/components/ChannelScreenSkeleton";
-/* import VideoScreen from "screens/VideoScreen";
- */
+import VideoScreen from "screens/VideoScreen";
+
 const ChannelScreen = lazy(() => import("screens/ChannelScreen"));
 
 const ChannelScreenElement = () => (
@@ -14,12 +14,12 @@ const ChannelScreenElement = () => (
     </Suspense>
   </RequireAuth>
 );
-/* 
+
 const VideoScreenElement = () => (
   <RequireAuth>
     <VideoScreen />
   </RequireAuth>
-); */
+);
 
 const RootRoutes = () => (
   <Routes>
@@ -29,9 +29,9 @@ const RootRoutes = () => (
     <Route path="/channels" element={<ChannelScreenElement />}>
       <Route path=":channelID" element={<ChannelScreenElement />} />
     </Route>
-    {/* <Route path="/call" element={<VideoScreenElement />}>
+    <Route path="/call" element={<VideoScreenElement />}>
       <Route path=":userId" element={<VideoScreenElement />} />
-    </Route> */}
+    </Route>
     <Route
       path="*"
       element={
